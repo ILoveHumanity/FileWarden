@@ -15,21 +15,14 @@ int main(int argc, char *argv[])
     path = in.readLine();
 
     QFileInfo info(path);
-    if(info.isFile()){
-        out << "File exist\t" << path << "\tsize: " << info.size() << Qt::flush;
-    }
-    else{
-        out << "File dont exist\t" << path << Qt::flush;
-    }
-
 
     while(true){
         info.refresh();
         if(info.isFile()){
-            out << "File exist\t" << path << "\tsize: " << info.size() << Qt::flush;
+            out << "File exist\t" << path << "\tFile size: " << info.size() << Qt::endl;
         }
         else{
-            out << "File dont exist\t" << path << Qt::flush;
+            out << "File dont exist\t" << path << Qt::endl;
         }
     }
 
