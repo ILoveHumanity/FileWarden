@@ -8,6 +8,7 @@ CONFIG += c++17 cmdline
 
 SOURCES += \
         ConsoleLog.cpp \
+        SourceFile.cpp \
         fileobserver.cpp \
         main.cpp
 
@@ -18,5 +19,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     ConsoleLog.h \
-    ILog.h
+    ILog.h \
+    IObservationSource.h \
+    SourceFile.h \
     fileobserver.h
