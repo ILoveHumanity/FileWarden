@@ -9,7 +9,7 @@ CONFIG += c++17 cmdline
 SOURCES += \
         ConsoleLog.cpp \
         SourceFile.cpp \
-        fileobserver.cpp \
+        FileObserver.cpp \
         main.cpp
 
 # Default rules for deployment.
@@ -22,4 +22,4 @@ HEADERS += \
     ILog.h \
     IObservationSource.h \
     SourceFile.h \
-    fileobserver.h
+    FileObserver.h
