@@ -1,6 +1,8 @@
+#ifndef ILog_H
+#define ILog_H
 #pragma once
+
 #include <QString>
-#include <qDebug>
 
 class ILog
 {
@@ -9,10 +11,4 @@ public:
     virtual void Log(QString data) = 0;
 };
 
-class ConsoleLog : public ILog
-{
-public:
-    ~ConsoleLog() = default;
-    ConsoleLog() = default;
-    void Log(QString data);
-};
+#endif // ILog_H
