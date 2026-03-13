@@ -8,6 +8,7 @@ CONFIG += c++17 cmdline
 
 SOURCES += \
         ConsoleLog.cpp \
+        fileobserver.cpp \
         main.cpp
 
 # Default rules for deployment.
@@ -18,3 +19,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     ConsoleLog.h \
     ILog.h
+    fileobserver.h
