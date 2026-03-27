@@ -1,4 +1,5 @@
 #include "FileObserver.h"
+#include "QDebug"
 
 FileObserver::FileObserver(IObservationSource *externalObservationSource, ILog *external_logger, unsigned int interval)
 {
@@ -41,13 +42,15 @@ void FileObserver::startObservation()
     while (true)
     {
         observationSource->update(newObservedFiles, observedFilesPath);
-
         for (int i = 0; i < newObservedFiles.size(); ++i)
         {
             newObservedFiles[i].refresh();
             if(logger != nullptr)
             {
                 int last_i = observedFiles.indexOf(newObservedFiles[i]);
+
+                //if (last_i >= 0){qDebug() << observedFiles[last_i].isFile() << newObservedFiles[i].isFile();}
+
                 // Если файл добавился под наблюдение
                 if (last_i < 0)
                 {
@@ -55,7 +58,7 @@ void FileObserver::startObservation()
                     logger->Log("File: " + newObservedFiles[i].filePath() + " added under observation" + (newObservedFiles[i].exists()?"size: [" + QString::number(newObservedFiles[i].size()) + " B]" : " file dont exist") );
                 }
                 // Если файл удалили/добавили
-                else if(observedFiles[last_i].exists() != newObservedFiles[i].exists())
+                else if(observedFiles[last_i].isFile() != newObservedFiles[i].isFile())
                 {
                     // signal
                     logger->Log("File: " + newObservedFiles[i].filePath() + (newObservedFiles[i].exists()?" file exist size: [" + QString::number(newObservedFiles[i].size()) + " B]" : " file dont exist"));
