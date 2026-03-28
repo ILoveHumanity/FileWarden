@@ -2,8 +2,6 @@
 #define IObservationTrigger_H
 #pragma once
 
-//#include <QString>
-
 class IObservationTrigger
 {
 public:
