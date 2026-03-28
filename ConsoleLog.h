@@ -10,7 +10,7 @@ class ConsoleLog : public ILog
 public:
     ~ConsoleLog();
     ConsoleLog();
-    void Log(QString data);
+    void log(QString data);
 };
 
 #endif // ConsoleLog_H

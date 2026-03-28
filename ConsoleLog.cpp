@@ -8,7 +8,7 @@ ConsoleLog::~ConsoleLog()
 {
 
 }
-void ConsoleLog::Log(QString data)
+void ConsoleLog::log(QString data)
 {
     qDebug() << "Log: " << data;
 }

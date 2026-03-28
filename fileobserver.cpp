@@ -1,11 +1,11 @@
 #include "FileObserver.h"
 #include "QDebug"
 
-FileObserver::FileObserver(IObservationSource *externalObservationSource, IObservationTrigger *observationTrigger_, ILog *external_logger)
+FileObserver::FileObserver(IObservationSource *observationSource_, IObservationTrigger *observationTrigger_, ILog *logger_)
 {
     // initiate variables
-    observationSource = externalObservationSource;
-    logger = external_logger;
+    observationSource = observationSource_;
+    logger = logger_;
     observationTrigger = observationTrigger_;
 }
 
@@ -14,18 +14,22 @@ FileObserver::~FileObserver()
 
 }
 
-FileObserver &FileObserver::GetInstance(IObservationSource *externalObservationSource, IObservationTrigger *observationTrigger_, ILog *external_logger)
+FileObserver &FileObserver::GetInstance(IObservationSource *observationSource_, IObservationTrigger *observationTrigger_, ILog *logger_)
 {
-    static FileObserver Sobject(externalObservationSource, observationTrigger_, external_logger);
+    static FileObserver Sobject(observationSource_, observationTrigger_, logger_);
     return Sobject;
 }
 
-
-void FileObserver::setLogger(ILog *external_logger)
+void FileObserver::setObservationSource(IObservationSource *observationSource_)
 {
-    logger = external_logger;
+    observationSource = observationSource_;
+    pathsToObservedFiles.clear();
+    characteristicsOfObservedFiles.clear();
 }
-
+void FileObserver::setLogger(ILog *logger_)
+{
+    logger = logger_;
+}
 void FileObserver::setObservationTrigger(IObservationTrigger *observationTrigger_)
 {
     observationTrigger = observationTrigger_;
@@ -57,19 +61,19 @@ void FileObserver::startObservation()
                 if (last_i < 0)
                 {
                     // signal
-                    logger->Log("File: " + newObservedFile.filePath() + " added under observation" + (newObservedFile.exists()?" size: [" + QString::number(newObservedFile.size()) + " B]" : " file dont exist") );
+                    logger->log("File: " + newObservedFile.filePath() + " added under observation" + (newObservedFile.exists()?" size: [" + QString::number(newObservedFile.size()) + " B]" : " file dont exist") );
                 }
                 // Если файл удалили/добавили
                 else if(characteristicsOfObservedFiles[last_i].first != newObservedFile.exists())
                 {
                     // signal
-                    logger->Log("File: " + newObservedFile.filePath() + (newObservedFile.exists()?" file exist size: [" + QString::number(newObservedFile.size()) + " B]" : " file dont exist"));
+                    logger->log("File: " + newObservedFile.filePath() + (newObservedFile.exists()?" file exist size: [" + QString::number(newObservedFile.size()) + " B]" : " file dont exist"));
                 }
                 // Если файл поменяли
                 else if(characteristicsOfObservedFiles[last_i].second != newObservedFile.lastModified())
                 {
                     // signal
-                    logger->Log("File: " + newObservedFile.filePath() + " updated at: " + newObservedFile.lastModified().toString("dd.MM hh:mm:ss") + " size: [" + QString::number(newObservedFile.size()) + " B]" );
+                    logger->log("File: " + newObservedFile.filePath() + " updated at: " + newObservedFile.lastModified().toString("dd.MM hh:mm:ss") + " size: [" + QString::number(newObservedFile.size()) + " B]" );
                 }
             }
         }

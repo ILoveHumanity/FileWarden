@@ -21,16 +21,16 @@ private:
     IObservationTrigger *observationTrigger;
 
 private:
-    FileObserver(IObservationSource *observationSource, IObservationTrigger *observationTrigger_, ILog *logger);
+    FileObserver(IObservationSource *observationSource_, IObservationTrigger *observationTrigger_, ILog *logger_);
     ~FileObserver();
     FileObserver(const FileObserver &) = delete;
     FileObserver &operator=(const FileObserver &) = delete;
 
 
 public:
-    static FileObserver& GetInstance(IObservationSource *observationSource, IObservationTrigger *observationTrigger_, ILog *logger);
-
-    void setLogger(ILog *logger);
+    static FileObserver& GetInstance(IObservationSource *observationSource_, IObservationTrigger *observationTrigger_, ILog *logger_);
+    void setObservationSource(IObservationSource *observationSource_);
+    void setLogger(ILog *logger_);
     void setObservationTrigger(IObservationTrigger *observationTrigger_);
 
     void startObservation();
