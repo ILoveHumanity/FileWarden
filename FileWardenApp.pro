@@ -21,5 +21,6 @@ HEADERS += \
     ConsoleLog.h \
     ILog.h \
     IObservationSource.h \
+    IObservationTrigger.h \
     SourceFile.h \
     FileObserver.h
