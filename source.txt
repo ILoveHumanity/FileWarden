@@ -1,3 +1,3 @@
-H:\Documents\ProgTech\FileWarden\FileWardenApp\source.txt
-H:\Documents\ProgTech\FileWarden\1234.txt
-H:\Documents\ProgTech\FileWarden\123.txt
+../../FileWarden/source.txt
+..\..\FileWarden\TestFiles\1.txt
+..\..\FileWarden\TestFiles\2.txt

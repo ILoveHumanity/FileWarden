@@ -14,8 +14,8 @@
 class FileObserver
 {
 private:
-    QFileInfoList observedFiles;
-    QSet<QString> observedFilesPath;
+    QVector<QPair<bool, QDateTime>> characteristicsOfObservedFiles;
+    QVector<QString> pathsToObservedFiles;
     IObservationSource *observationSource;
     ILog *logger;
     unsigned int fileStateCheckInterval = 10;
