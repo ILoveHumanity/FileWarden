@@ -3,14 +3,14 @@
 #pragma once
 
 #include <QFileInfo>
-#include <QSet>
+#include <QVector>
 #include <QString>
 
 class IObservationSource
 {
 public:
     virtual ~IObservationSource() = default;
-    virtual void update(QFileInfoList& newObservedFiles, QSet<QString>& observedFilesPath) = 0;
+    virtual void update(QVector<QString>& newPathsToObservedFiles) = 0;
 };
 
 #endif // IObservationSource_H
