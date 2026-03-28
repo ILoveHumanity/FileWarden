@@ -4,11 +4,11 @@
 
 #include "Ilog.h"
 #include "IObservationSource.h"
+#include "IObservationTrigger.h"
 #include <QDateTime>
 #include <QTime>
 #include <QFileInfo>
-#include <QSet>
-#include <QThread>
+
 
 
 class FileObserver
@@ -18,21 +18,20 @@ private:
     QVector<QString> pathsToObservedFiles;
     IObservationSource *observationSource;
     ILog *logger;
-    unsigned int fileStateCheckInterval = 10;
+    IObservationTrigger *observationTrigger;
 
 private:
-    FileObserver();
-    FileObserver(IObservationSource *observationSource, ILog *logger, unsigned int fileStateCheckInterval);
+    FileObserver(IObservationSource *observationSource, IObservationTrigger *observationTrigger_, ILog *logger);
     ~FileObserver();
     FileObserver(const FileObserver &) = delete;
     FileObserver &operator=(const FileObserver &) = delete;
 
 
 public:
-    static FileObserver& GetInstance(IObservationSource *observationSource, ILog *logger, unsigned int fileStateCheckInterval);
+    static FileObserver& GetInstance(IObservationSource *observationSource, IObservationTrigger *observationTrigger_, ILog *logger);
 
     void setLogger(ILog *logger);
-    void setStateCheckInterval(unsigned int interval);
+    void setObservationTrigger(IObservationTrigger *observationTrigger_);
 
     void startObservation();
 };

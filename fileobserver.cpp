@@ -1,12 +1,12 @@
 #include "FileObserver.h"
 #include "QDebug"
 
-FileObserver::FileObserver(IObservationSource *externalObservationSource, ILog *external_logger, unsigned int interval)
+FileObserver::FileObserver(IObservationSource *externalObservationSource, IObservationTrigger *observationTrigger_, ILog *external_logger)
 {
     // initiate variables
     observationSource = externalObservationSource;
     logger = external_logger;
-    fileStateCheckInterval = interval;
+    observationTrigger = observationTrigger_;
 }
 
 FileObserver::~FileObserver()
@@ -14,9 +14,9 @@ FileObserver::~FileObserver()
 
 }
 
-FileObserver &FileObserver::GetInstance(IObservationSource *externalObservationSource, ILog *external_logger, unsigned int interval = 5)
+FileObserver &FileObserver::GetInstance(IObservationSource *externalObservationSource, IObservationTrigger *observationTrigger_, ILog *external_logger)
 {
-    static FileObserver Sobject(externalObservationSource, external_logger, interval);
+    static FileObserver Sobject(externalObservationSource, observationTrigger_, external_logger);
     return Sobject;
 }
 
@@ -26,9 +26,9 @@ void FileObserver::setLogger(ILog *external_logger)
     logger = external_logger;
 }
 
-void FileObserver::setStateCheckInterval(unsigned int interval)
+void FileObserver::setObservationTrigger(IObservationTrigger *observationTrigger_)
 {
-    fileStateCheckInterval = interval;
+    observationTrigger = observationTrigger_;
 }
 
 void FileObserver::startObservation()
@@ -76,7 +76,7 @@ void FileObserver::startObservation()
         //fileInfoContainer->setNew(newPathsToObservedFiles, newCharacteristicsOfObservedFiles)
         pathsToObservedFiles = newPathsToObservedFiles;
         characteristicsOfObservedFiles = newCharacteristicsOfObservedFiles;
-        QThread::sleep(fileStateCheckInterval);
+        observationTrigger->wait();
     }
 }
 
