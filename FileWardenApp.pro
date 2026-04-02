@@ -8,6 +8,8 @@ CONFIG += c++17 cmdline
 
 SOURCES += \
         ConsoleLog.cpp \
+        MyFInfo.cpp \
+        MyFInfoVectorContainer.cpp \
         SleepTrigger.cpp \
         SourceFile.cpp \
         FileObserver.cpp \
@@ -21,8 +23,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     ConsoleLog.h \
     ILog.h \
+    IMyFInfoContainer.h \
     IObservationSource.h \
     IObservationTrigger.h \
+    MyFInfo.h \
+    MyFInfoVectorContainer.h \
     SleepTrigger.h \
     SourceFile.h \
     FileObserver.h
