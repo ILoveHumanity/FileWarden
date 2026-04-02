@@ -9,6 +9,7 @@ CONFIG += c++17 cmdline
 SOURCES += \
         ConsoleLog.cpp \
         MyFInfo.cpp \
+        MyFInfoVectorContainer.cpp \
         SleepTrigger.cpp \
         SourceFile.cpp \
         FileObserver.cpp \
@@ -26,6 +27,7 @@ HEADERS += \
     IObservationSource.h \
     IObservationTrigger.h \
     MyFInfo.h \
+    MyFInfoVectorContainer.h \
     SleepTrigger.h \
     SourceFile.h \
     FileObserver.h

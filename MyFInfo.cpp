@@ -25,15 +25,15 @@ MyFInfo& MyFInfo::operator = (const MyFInfo& a)
     }
     return *this;
 }
-QString MyFInfo::getFilePath()
+QString MyFInfo::getFilePath() const
 {
     return filePath;
 }
-bool MyFInfo::getExist()
+bool MyFInfo::getExist() const
 {
     return exist;
 }
-QDateTime MyFInfo::getLastUpdated()
+QDateTime MyFInfo::getLastUpdated() const
 {
     return lastUpdated;
 }

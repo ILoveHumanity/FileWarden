@@ -15,9 +15,9 @@ public:
     ~MyFInfo();
     MyFInfo(const MyFInfo& a);
     MyFInfo& operator = (const MyFInfo& a);
-    QString getFilePath();
-    bool getExist();
-    QDateTime getLastUpdated();
+    QString getFilePath() const;
+    bool getExist() const;
+    QDateTime getLastUpdated() const;
     bool isNull();
 };
 
