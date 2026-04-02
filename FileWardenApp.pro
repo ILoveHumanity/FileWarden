@@ -22,6 +22,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     ConsoleLog.h \
     ILog.h \
+    IMyFInfoContainer.h \
     IObservationSource.h \
     IObservationTrigger.h \
     MyFInfo.h \
