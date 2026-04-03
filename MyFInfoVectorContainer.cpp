@@ -4,7 +4,7 @@ MyFInfoVectorContainer::MyFInfoVectorContainer()
 {
     VFilePath = QVector<QString>();
     VExist = QVector<bool>();
-    VLastUpdated = QVector<QDateTime>();
+    VLastModified = QVector<QDateTime>();
 }
 MyFInfoVectorContainer::~MyFInfoVectorContainer()
 {
@@ -16,7 +16,7 @@ MyFInfo MyFInfoVectorContainer::getByPath(const QString& filePath_)
     if (i == -1){
         return MyFInfo();
     }
-    return MyFInfo(VFilePath[i], VExist[i], VLastUpdated[i]);
+    return MyFInfo(VFilePath[i], VExist[i], VLastModified[i]);
 }
 void MyFInfoVectorContainer::setNewData(const QVector<MyFInfo>& newData)
 {
@@ -24,11 +24,24 @@ void MyFInfoVectorContainer::setNewData(const QVector<MyFInfo>& newData)
     VFilePath.squeeze();
     VExist.clear();
     VExist.squeeze();
-    VLastUpdated.clear();
-    VLastUpdated.squeeze();
+    VLastModified.clear();
+    VLastModified.squeeze();
     for (int i = 0; i < newData.size(); ++i){
         VFilePath.append(newData[i].getFilePath());
         VExist.append(newData[i].getExist());
-        VLastUpdated.append(newData[i].getLastUpdated());
+        VLastModified.append(newData[i].getLastModified());
     }
+}
+QVector<QString> MyFInfoVectorContainer::getAllPaths()
+{
+    return VFilePath;
+}
+void MyFInfoVectorContainer::clear()
+{
+    VFilePath.clear();
+    VFilePath.squeeze();
+    VExist.clear();
+    VExist.squeeze();
+    VLastModified.clear();
+    VLastModified.squeeze();
 }
