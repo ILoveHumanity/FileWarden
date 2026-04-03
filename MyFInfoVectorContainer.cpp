@@ -32,3 +32,16 @@ void MyFInfoVectorContainer::setNewData(const QVector<MyFInfo>& newData)
         VLastUpdated.append(newData[i].getLastUpdated());
     }
 }
+QVector<QString> MyFInfoVectorContainer::getAllPaths()
+{
+    return VFilePath;
+}
+void MyFInfoVectorContainer::clear()
+{
+    VFilePath.clear();
+    VFilePath.squeeze();
+    VExist.clear();
+    VExist.squeeze();
+    VLastUpdated.clear();
+    VLastUpdated.squeeze();
+}

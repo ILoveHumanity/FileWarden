@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
 
-    SourceFile file("../../FileWarden/source.txt"); // create container for observer
+    SourceFile file("../FileWardenApp/source.txt"); // create container for observer
     SleepTrigger trigger(1);
     ConsoleLog logger; // create logger for observer
 

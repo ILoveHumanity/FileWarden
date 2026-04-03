@@ -9,15 +9,15 @@ class MyFInfo
 {
     QString filePath;
     bool exist;
-    QDateTime lastUpdated;
+    QDateTime lastModified;
 public:
-    MyFInfo(QString filePath_ = QString(), bool exist_ = false, QDateTime lastUpdated_ = QDateTime());
+    MyFInfo(QString filePath_ = QString(), bool exist_ = false, QDateTime lastModified_ = QDateTime());
     ~MyFInfo();
     MyFInfo(const MyFInfo& a);
     MyFInfo& operator = (const MyFInfo& a);
     QString getFilePath() const;
     bool getExist() const;
-    QDateTime getLastUpdated() const;
+    QDateTime getLastModified() const;
     bool isNull();
 };
 

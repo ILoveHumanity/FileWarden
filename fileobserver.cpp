@@ -1,12 +1,13 @@
 #include "FileObserver.h"
 #include "QDebug"
 
-FileObserver::FileObserver(IObservationSource *observationSource_, IObservationTrigger *observationTrigger_, ILog *logger_)
+FileObserver::FileObserver(IObservationSource *observationSource_, IMyFInfoContainer *observedFiles_, IObservationTrigger *observationTrigger_, ILog *logger_)
 {
     // initiate variables
     observationSource = observationSource_;
-    logger = logger_;
+    observedFiles -> clear();
     observationTrigger = observationTrigger_;
+    logger = logger_;
 }
 
 FileObserver::~FileObserver()
@@ -14,17 +15,16 @@ FileObserver::~FileObserver()
 
 }
 
-FileObserver &FileObserver::GetInstance(IObservationSource *observationSource_, IObservationTrigger *observationTrigger_, ILog *logger_)
+FileObserver &FileObserver::GetInstance(IObservationSource *observationSource_, IMyFInfoContainer *observedFiles_, IObservationTrigger *observationTrigger_, ILog *logger_)
 {
-    static FileObserver Sobject(observationSource_, observationTrigger_, logger_);
+    static FileObserver Sobject(observationSource_, observedFiles_, observationTrigger_, logger_);
     return Sobject;
 }
 
 void FileObserver::setObservationSource(IObservationSource *observationSource_)
 {
     observationSource = observationSource_;
-    pathsToObservedFiles.clear();
-    characteristicsOfObservedFiles.clear();
+    observedFiles -> clear();
 }
 void FileObserver::setLogger(ILog *logger_)
 {
@@ -43,13 +43,12 @@ void FileObserver::startObservation()
     }
 
 
-    QVector<QString> newPathsToObservedFiles;
-    QVector<QPair<bool, QDateTime>> newCharacteristicsOfObservedFiles;
+    QVector<QString> newPathsToObservedFiles = observedFiles->getAllPaths();
+    QVector<MyFInfo> newObservedFiles;
     while (true)
     {
-        newCharacteristicsOfObservedFiles.clear();
-        //newPathsToObservedFiles = pathsToObservedFiles;
-        observationSource->update(newPathsToObservedFiles); //getNewPathsToObservedFiles myFileInfoContainer
+        newObservedFiles.clear();
+        observationSource->update(newPathsToObservedFiles);
         for (int i = 0; i < newPathsToObservedFiles.size(); ++i)
         {
             QFileInfo newObservedFile(newPathsToObservedFiles[i]);

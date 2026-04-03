@@ -12,12 +12,14 @@ class MyFInfoVectorContainer : public IMyFInfoContainer
 {
     QVector<QString> VFilePath;
     QVector<bool> VExist;
-    QVector<QDateTime> VLastUpdated;
+    QVector<QDateTime> VLastModified;
 public:
     MyFInfoVectorContainer();
     ~MyFInfoVectorContainer();
-    MyFInfo getByPath(const QString& filePath_) = 0;
-    void setNewData(const QVector<MyFInfo>& newData) = 0;
+    MyFInfo getByPath(const QString& filePath_);
+    void setNewData(const QVector<MyFInfo>& newData);
+    QVector<QString> getAllPaths();
+    void clear();
 };
 
 #endif // MyFInfoVectorContainer_H
