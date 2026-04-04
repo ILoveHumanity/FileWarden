@@ -1,14 +1,17 @@
 #include "FileObserver.h"
-#include "QDebug"
 
 FileObserver::FileObserver(IObservationSource *observationSource_, IMyFInfoContainer *observedFiles_, IObservationTrigger *observationTrigger_, ILog *logger_)
 {
-    // initiate variables
     observationSource = observationSource_;
     observedFiles = observedFiles_;
-    observedFiles -> clear();
     observationTrigger = observationTrigger_;
     logger = logger_;
+    if(logger)
+    {
+        connect(this, &FileObserver::fileExist, logger, &ILog::onFileExistence);
+        connect(this, &FileObserver::fileUpdate, logger, &ILog::onFileUpdate);
+        connect(this, &FileObserver::fileMissing, logger, &ILog::onFileMissing);
+    }
 }
 
 FileObserver::~FileObserver()
@@ -25,11 +28,16 @@ FileObserver &FileObserver::GetInstance(IObservationSource *observationSource_, 
 void FileObserver::setObservationSource(IObservationSource *observationSource_)
 {
     observationSource = observationSource_;
-    observedFiles -> clear();
 }
 void FileObserver::setLogger(ILog *logger_)
 {
     logger = logger_;
+    if(logger)
+    {
+        connect(this, &FileObserver::fileExist, logger, &ILog::onFileExistence);
+        connect(this, &FileObserver::fileUpdate, logger, &ILog::onFileUpdate);
+        connect(this, &FileObserver::fileMissing, logger, &ILog::onFileMissing);
+    }
 }
 void FileObserver::setObservationTrigger(IObservationTrigger *observationTrigger_)
 {
@@ -38,12 +46,19 @@ void FileObserver::setObservationTrigger(IObservationTrigger *observationTrigger
 
 void FileObserver::startObservation()
 {
-    if (observationSource == nullptr)
+    if (!observationSource)
     {
         return;
     }
-
-
+    if(!observationTrigger)
+    {
+        return;
+    }
+    if (!observedFiles)
+    {
+        return;
+    }
+    observedFiles -> clear();
     QVector<QString> newPathsToObservedFiles = observedFiles->getAllPaths();
     QVector<MyFInfo> newObservedFiles;
     while (true)
@@ -56,26 +71,25 @@ void FileObserver::startObservation()
             MyFInfo newObservedFile(newFileInfo.absoluteFilePath(), newFileInfo.isFile(), newFileInfo.lastModified());
             int size = newFileInfo.size();
             newObservedFiles.append(newObservedFile);
-            if(logger != nullptr)
+            if(logger)
             {
                 MyFInfo observedFile = observedFiles->getByPath(newObservedFile.getFilePath());
-                // Если файл добавился под наблюдение
-                if (observedFile.isNull())
+                // Если файл добавился под наблюдение || Если файл удалили/добавили
+                if (observedFile.isNull() || observedFile.getExist() != newObservedFile.getExist())
                 {
-                    // signal
-                    logger->log("File: " + newObservedFile.getFilePath() + " added under observation" + (newObservedFile.getExist()?" size: [" + QString::number(size) + " B]" : " file dont exist") );
+                    if(newObservedFile.getExist())
+                    {
+                        emit fileExist(newObservedFile, size);
+                    }
+                    else
+                    {
+                        emit fileMissing(newObservedFile);
+                    }
                 }
-                // Если файл удалили/добавили
-                else if(observedFile.getExist() != newObservedFile.getExist())
-                {
-                    // signal
-                    logger->log("File: " + newObservedFile.getFilePath() + (newObservedFile.getExist()?" file exist size: [" + QString::number(size) + " B]" : " file dont exist"));
-                }
-                // Если файл поменяли
+                // Если файл изменился
                 else if(observedFile.getLastModified() != newObservedFile.getLastModified())
                 {
-                    // signal
-                    logger->log("File: " + newObservedFile.getFilePath() + " updated at: " + newObservedFile.getLastModified().toString("dd.MM hh:mm:ss") + " size: [" + QString::number(size) + " B]" );
+                    emit fileUpdate(newObservedFile, size);
                 }
             }
         }
@@ -83,4 +97,3 @@ void FileObserver::startObservation()
         observationTrigger->wait();
     }
 }
-
