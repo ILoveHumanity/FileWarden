@@ -6,14 +6,14 @@
 #include "IObservationSource.h"
 #include "IObservationTrigger.h"
 #include "IMyFInfoContainer.h"
+#include "MyFInfo.h"
 #include <QDateTime>
-#include <QTime>
 #include <QFileInfo>
+#include <QObject>
 
-
-
-class FileObserver
+class FileObserver : public QObject
 {
+    Q_OBJECT
 private:
     IMyFInfoContainer *observedFiles;
     IObservationSource *observationSource;
@@ -26,14 +26,17 @@ private:
     FileObserver(const FileObserver &) = delete;
     FileObserver &operator=(const FileObserver &) = delete;
 
-
 public:
     static FileObserver& GetInstance(IObservationSource *observationSource_, IMyFInfoContainer *observedFiles, IObservationTrigger *observationTrigger_, ILog *logger_);
     void setObservationSource(IObservationSource *observationSource_);
     void setLogger(ILog *logger_);
     void setObservationTrigger(IObservationTrigger *observationTrigger_);
-
     void startObservation();
+
+signals:
+    void fileExist(const MyFInfo& data, const int& size);
+    void fileUpdate(const MyFInfo& data, const int& size);
+    void fileMissing(const MyFInfo& data);
 };
 
 #endif // FileObserver_H
