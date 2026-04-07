@@ -43,7 +43,10 @@ void FileObserver::setObservationTrigger(IObservationTrigger *observationTrigger
 {
     observationTrigger = observationTrigger_;
 }
-
+void FileObserver::setMyFInfoContainer(IMyFInfoContainer *observedFiles_)
+{
+    observedFiles = observedFiles_;
+}
 void FileObserver::startObservation()
 {
     if (!observationSource)

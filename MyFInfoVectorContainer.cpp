@@ -18,19 +18,19 @@ MyFInfo MyFInfoVectorContainer::getByPath(const QString& filePath_)
     }
     return MyFInfo(VFilePath[i], VExist[i], VLastModified[i]);
 }
-void MyFInfoVectorContainer::setNewData(const QVector<MyFInfo>& newData)
+void MyFInfoVectorContainer::setNewData(const QVector<MyFInfo>& data_)
 {
     VFilePath.clear();
-    VFilePath.squeeze();
     VExist.clear();
-    VExist.squeeze();
     VLastModified.clear();
-    VLastModified.squeeze();
-    for (int i = 0; i < newData.size(); ++i){
-        VFilePath.append(newData[i].getFilePath());
-        VExist.append(newData[i].getExist());
-        VLastModified.append(newData[i].getLastModified());
+    for (int i = 0; i < data_.size(); ++i){
+        VFilePath.append(data_[i].getFilePath());
+        VExist.append(data_[i].getExist());
+        VLastModified.append(data_[i].getLastModified());
     }
+    VFilePath.squeeze();
+    VExist.squeeze();
+    VLastModified.squeeze();
 }
 QVector<QString> MyFInfoVectorContainer::getAllPaths()
 {

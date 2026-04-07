@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     QCoreApplication app(argc, argv);
 
     SourceFile file("../FileWardenApp/source.txt");
-    SleepTrigger trigger(1);
+    SleepTrigger trigger(100);
     ConsoleLog logger;
     MyFInfoVectorContainer container;
     FileObserver &observer = FileObserver::GetInstance(&file, &container, &trigger, &logger);
