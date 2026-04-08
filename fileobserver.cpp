@@ -1,17 +1,11 @@
 #include "FileObserver.h"
 
-FileObserver::FileObserver(IObservationSource *observationSource_, IMyFInfoContainer *observedFiles_, IObservationTrigger *observationTrigger_, ILog *logger_)
+FileObserver::FileObserver()
 {
-    observationSource = observationSource_;
-    observedFiles = observedFiles_;
-    observationTrigger = observationTrigger_;
-    logger = logger_;
-    if(logger)
-    {
-        connect(this, &FileObserver::fileExist, logger, &ILog::onFileExistence);
-        connect(this, &FileObserver::fileUpdate, logger, &ILog::onFileUpdate);
-        connect(this, &FileObserver::fileMissing, logger, &ILog::onFileMissing);
-    }
+    observationSource = nullptr;
+    myFInfoContainer = nullptr;
+    observationTrigger = nullptr;
+    fileStateSignalHandler = nullptr;
 }
 
 FileObserver::~FileObserver()
@@ -19,34 +13,46 @@ FileObserver::~FileObserver()
 
 }
 
-FileObserver &FileObserver::GetInstance(IObservationSource *observationSource_, IMyFInfoContainer *observedFiles_, IObservationTrigger *observationTrigger_, ILog *logger_)
+FileObserver &FileObserver::GetInstance(IObservationSource *observationSource_, IMyFInfoContainer *myFInfoContainer_, IObservationTrigger *observationTrigger_, IFileStateSignalHandler *fileStateSignalHandler_)
 {
-    static FileObserver Sobject(observationSource_, observedFiles_, observationTrigger_, logger_);
-    return Sobject;
+    static FileObserver sObject;
+    sObject.setObservationSource(observationSource_);
+    sObject.setMyFInfoContainer(myFInfoContainer_);
+    sObject.setObservationTrigger(observationTrigger_);
+    sObject.setFileStateSignalHandler(fileStateSignalHandler_);
+    return sObject;
 }
 
 void FileObserver::setObservationSource(IObservationSource *observationSource_)
 {
     observationSource = observationSource_;
 }
-void FileObserver::setLogger(ILog *logger_)
+
+void FileObserver::setMyFInfoContainer(IMyFInfoContainer *myFInfoContainer_)
 {
-    logger = logger_;
-    if(logger)
-    {
-        connect(this, &FileObserver::fileExist, logger, &ILog::onFileExistence);
-        connect(this, &FileObserver::fileUpdate, logger, &ILog::onFileUpdate);
-        connect(this, &FileObserver::fileMissing, logger, &ILog::onFileMissing);
-    }
+    myFInfoContainer = myFInfoContainer_;
 }
+
 void FileObserver::setObservationTrigger(IObservationTrigger *observationTrigger_)
 {
     observationTrigger = observationTrigger_;
 }
-void FileObserver::setMyFInfoContainer(IMyFInfoContainer *observedFiles_)
+
+void FileObserver::setFileStateSignalHandler(IFileStateSignalHandler *fileStateSignalHandler_)
 {
-    observedFiles = observedFiles_;
+    if(fileStateSignalHandler)
+    {
+        disconnect(fileStateSignalHandler);
+    }
+    fileStateSignalHandler = fileStateSignalHandler_;
+    if(fileStateSignalHandler)
+    {
+        connect(this, &FileObserver::fileExist, fileStateSignalHandler, &IFileStateSignalHandler::onFileExistence);
+        connect(this, &FileObserver::fileUpdate, fileStateSignalHandler, &IFileStateSignalHandler::onFileUpdate);
+        connect(this, &FileObserver::fileMissing, fileStateSignalHandler, &IFileStateSignalHandler::onFileMissing);
+    }
 }
+
 void FileObserver::startObservation()
 {
     if (!observationSource)
@@ -57,12 +63,16 @@ void FileObserver::startObservation()
     {
         return;
     }
-    if (!observedFiles)
+    if (!myFInfoContainer)
     {
         return;
     }
-    observedFiles -> clear();
-    QVector<QString> newPathsToObservedFiles = observedFiles->getAllPaths();
+    if (!fileStateSignalHandler)
+    {
+        return;
+    }
+    myFInfoContainer -> clear();
+    QVector<QString> newPathsToObservedFiles = myFInfoContainer->getAllPaths();
     QVector<MyFInfo> newObservedFiles;
     while (true)
     {
@@ -74,29 +84,26 @@ void FileObserver::startObservation()
             MyFInfo newObservedFile(newFileInfo.absoluteFilePath(), newFileInfo.isFile(), newFileInfo.lastModified());
             int size = newFileInfo.size();
             newObservedFiles.append(newObservedFile);
-            if(logger)
+            MyFInfo observedFile = myFInfoContainer->getByPath(newObservedFile.getFilePath());
+            // Если файл добавился под наблюдение || Если файл удалили/добавили
+            if (observedFile.isNull() || observedFile.getExist() != newObservedFile.getExist())
             {
-                MyFInfo observedFile = observedFiles->getByPath(newObservedFile.getFilePath());
-                // Если файл добавился под наблюдение || Если файл удалили/добавили
-                if (observedFile.isNull() || observedFile.getExist() != newObservedFile.getExist())
+                if(newObservedFile.getExist())
                 {
-                    if(newObservedFile.getExist())
-                    {
-                        emit fileExist(newObservedFile, size);
-                    }
-                    else
-                    {
-                        emit fileMissing(newObservedFile);
-                    }
+                    emit fileExist(newObservedFile, size);
                 }
-                // Если файл изменился
-                else if(observedFile.getLastModified() != newObservedFile.getLastModified())
+                else
                 {
-                    emit fileUpdate(newObservedFile, size);
+                    emit fileMissing(newObservedFile);
                 }
             }
+            // Если файл изменился
+            else if(observedFile.getLastModified() != newObservedFile.getLastModified())
+            {
+                emit fileUpdate(newObservedFile, size);
+            }
         }
-        observedFiles->setNewData(newObservedFiles);
+        myFInfoContainer->setNewData(newObservedFiles);
         observationTrigger->wait();
     }
 }

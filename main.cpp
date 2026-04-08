@@ -1,19 +1,21 @@
 #include <QCoreApplication>
-#include <fileobserver.h>
-#include <ConsoleLog.h>
-#include <SourceFile.h>
-#include <SleepTrigger.h>
-#include <MyFInfoVectorContainer.h>
+#include "FileObserver.h"
+#include "ConsoleLog.h"
+#include "FileStateSignalLogger.h"
+#include "SourceFile.h"
+#include "SleepTrigger.h"
+#include "MyFInfoVectorContainer.h"
 
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
 
-    SourceFile file("../FileWardenApp/source.txt");
+    SourceFile source("../FileWardenApp/source.txt");
     SleepTrigger trigger(100);
     ConsoleLog logger;
-    MyFInfoVectorContainer container;
-    FileObserver &observer = FileObserver::GetInstance(&file, &container, &trigger, &logger);
+    FileStateSignalLogger fileStateSignalHandler(&logger);
+    MyFInfoVectorContainer myFInfoContainer;
+    FileObserver &observer = FileObserver::GetInstance(&source, &myFInfoContainer, &trigger, &fileStateSignalHandler);
     observer.startObservation(); // run cycle
 
     return app.exec();
