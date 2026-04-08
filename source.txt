@@ -1,3 +1,5 @@
 ../FileWardenApp/source.txt
 ..\FileWardenApp\TestFiles\1.txt
 ..\FileWardenApp\TestFiles\2.txt
+..\FileWardenApp\TestFiles\3.txt.lnk
+..\FileWardenApp\TestFiles\qwerty

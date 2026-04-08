@@ -10,14 +10,14 @@ SourceFile::~SourceFile()
 
 }
 
-void SourceFile::update(QVector<QString>& newPathsToObservedFiles)
+void SourceFile::update(QVector<QString>& pathsToObservedFiles_)
 {
     QFile sourceFile(sourceFilePath);
 
     // open file for reading
     if (sourceFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        newPathsToObservedFiles.clear();
+        pathsToObservedFiles_.clear();
         QTextStream inFile(&sourceFile);
         while (!inFile.atEnd())
         {
@@ -27,8 +27,8 @@ void SourceFile::update(QVector<QString>& newPathsToObservedFiles)
                 continue;
             }
             newFilePath = QFileInfo(newFilePath).absoluteFilePath();
-            if(newPathsToObservedFiles.indexOf(newFilePath) == -1){
-                newPathsToObservedFiles.append(newFilePath);
+            if(pathsToObservedFiles_.indexOf(newFilePath) == -1){
+                pathsToObservedFiles_.append(newFilePath);
             }
         }
     }

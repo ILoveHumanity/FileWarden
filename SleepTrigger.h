@@ -9,7 +9,7 @@ class SleepTrigger : public IObservationTrigger
 {
     unsigned int timeInterval;
 public:
-    SleepTrigger(int timeInterval_ = 1);
+    SleepTrigger(unsigned int timeInterval_ = 100);
     ~SleepTrigger();
     void wait();
 };
