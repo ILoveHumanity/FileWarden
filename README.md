@@ -24,16 +24,17 @@
 ```mermaid
 classDiagram
 	class FileObserver {
-		-IMyFInfoContainer* observedFiles
+		-IMyFInfoContainer* myFInfoContainer
 		-IObservationSource* observationSource
-		-ILog* logger
 		-IObservationTrigger* observationTrigger
-		-FileObserver(IObservationSource*, IMyFInfoContainer*, IObservationTrigger*, ILog*)
+		-IFileStateSignalHandler *fileStateSignalHandler
+		-FileObserver()
 		-~FileObserver()
-		+static GetInstance(IObservationSource*, IMyFInfoContainer*, IObservationTrigger*, ILog*) FileObserver&
+		+static GetInstance(IObservationSource*, IMyFInfoContainer*, IObservationTrigger*, IFileStateSignalHandler*) FileObserver&
 		+setObservationSource(IObservationSource*)
-		+setLogger(ILog*)
+        +setMyFInfoContainer(IMyFInfoContainer*)
 		+setObservationTrigger(IObservationTrigger*)
+		+setFileStateSignalHandler(IFileStateSignalHandler*)
 		+startObservation()
 	}
     
@@ -69,17 +70,6 @@ classDiagram
 		+update(QVector~QString~&)
 	}
 
-	class ILog {
-		<<abstract>>
-		+~ConsoleLog()*
-		+log(QString data)*
-	}
-	class ConsoleLog {
-		+ConsoleLog()
-		+~ConsoleLog()
-		+log(QString data)
-	}
-
 	class IObservationTrigger {
 		<<interface>>
 		+~IObservationTrigger()*
@@ -90,6 +80,28 @@ classDiagram
 		+SleepTrigger(unsigned int)
 		+~SleepTrigger()
 		+wait()
+	}
+
+    class IFileStateSignalHandler {
+        <<abstract>>
+        +~IFileStateSignalHandler()*
+    }
+    class FileStateSignalLogger {
+        -Ilog* logger
+        +FileStateSignalLogger(ILog*)
+        +~FileStateSignalLogger()
+        +setLogger(ILog*)
+    }
+
+	class ILog {
+		<<interface>>
+		+~ILog()*
+		+log(QString)*
+	}
+	class ConsoleLog {
+		+ConsoleLog()
+		+~ConsoleLog()
+		+log(QString)
 	}
 
 	class MyFInfo {
@@ -106,14 +118,20 @@ classDiagram
 		+isNull() bool
 	}
 
-    IMyFInfoContainer <|.. MyFInfoVectorContainer
-    IObservationSource <|.. SourceFile
-    ILog <|.. ConsoleLog
-    IObservationTrigger <|.. SleepTrigger
-    IMyFInfoContainer ..> MyFInfo
+    MyFInfo <.. IMyFInfoContainer
 
     FileObserver o-- IMyFInfoContainer
+    IMyFInfoContainer <|.. MyFInfoVectorContainer
+
     FileObserver o-- IObservationSource
-    FileObserver o-- ILog
+    IObservationSource <|.. SourceFile
+
     FileObserver o-- IObservationTrigger
+    IObservationTrigger <|.. SleepTrigger
+
+    FileObserver o-- IFileStateSignalHandler
+    IFileStateSignalHandler <|.. FileStateSignalLogger
+
+    ILog --o FileStateSignalLogger
+    ILog <|.. ConsoleLog
 ```

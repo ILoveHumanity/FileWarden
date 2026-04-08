@@ -2,7 +2,7 @@
 #define FileObserver_H
 #pragma once
 
-#include "Ilog.h"
+#include "IFileStateSignalHandler.h"
 #include "IObservationSource.h"
 #include "IObservationTrigger.h"
 #include "IMyFInfoContainer.h"
@@ -15,23 +15,23 @@ class FileObserver : public QObject
 {
     Q_OBJECT
 private:
-    IMyFInfoContainer *observedFiles;
     IObservationSource *observationSource;
-    ILog *logger;
+    IMyFInfoContainer *myFInfoContainer;
     IObservationTrigger *observationTrigger;
+    IFileStateSignalHandler *fileStateSignalHandler;
 
 private:
-    FileObserver(IObservationSource *observationSource_, IMyFInfoContainer *observedFiles_, IObservationTrigger *observationTrigger_, ILog *logger_);
+    FileObserver();
     ~FileObserver();
     FileObserver(const FileObserver &) = delete;
     FileObserver &operator=(const FileObserver &) = delete;
 
 public:
-    static FileObserver& GetInstance(IObservationSource *observationSource_, IMyFInfoContainer *observedFiles_, IObservationTrigger *observationTrigger_, ILog *logger_);
+    static FileObserver& GetInstance(IObservationSource *observationSource_, IMyFInfoContainer *myFInfoContainer_, IObservationTrigger *observationTrigger_, IFileStateSignalHandler *fileStateSignalHandler_);
     void setObservationSource(IObservationSource *observationSource_);
-    void setLogger(ILog *logger_);
+    void setMyFInfoContainer(IMyFInfoContainer *myFInfoContainer_);
     void setObservationTrigger(IObservationTrigger *observationTrigger_);
-    void setMyFInfoContainer(IMyFInfoContainer *observedFiles_);
+    void setFileStateSignalHandler(IFileStateSignalHandler *fileStateSignalHandler_);
     void startObservation();
 
 signals:
