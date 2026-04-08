@@ -61,13 +61,13 @@ classDiagram
 	class IObservationSource {
 		<<interface>>
 		+~IObservationSource()*
-		+update(QVector~QString~&)*
+		+update(QVector~QString~&) bool*
 	}
 	class SourceFile {
 		-QString sourceFilePath
 		+SourceFile(QString)
 		+~SourceFile()
-		+update(QVector~QString~&)
+		+update(QVector~QString~&) bool
 	}
 
 	class IObservationTrigger {

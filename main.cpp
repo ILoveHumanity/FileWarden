@@ -17,6 +17,6 @@ int main(int argc, char *argv[])
     MyFInfoVectorContainer myFInfoContainer;
     FileObserver &observer = FileObserver::GetInstance(&source, &myFInfoContainer, &trigger, &fileStateSignalHandler);
     observer.startObservation(); // run cycle
-
+    qDebug("End");
     return app.exec();
 }

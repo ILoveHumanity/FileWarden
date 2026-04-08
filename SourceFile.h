@@ -13,7 +13,7 @@ class SourceFile : public IObservationSource
 public:
     SourceFile(QString sourceFilePath_);
     ~SourceFile();
-    void update(QVector<QString>& pathsToObservedFiles_);
+    bool update(QVector<QString>& pathsToObservedFiles_);
 };
 
 #endif // SourceFile_H

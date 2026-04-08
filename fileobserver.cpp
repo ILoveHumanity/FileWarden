@@ -74,10 +74,15 @@ void FileObserver::startObservation()
     myFInfoContainer -> clear();
     QVector<QString> newPathsToObservedFiles = myFInfoContainer->getAllPaths();
     QVector<MyFInfo> newObservedFiles;
+    bool continueFlag;
     while (true)
     {
+        continueFlag = observationSource->update(newPathsToObservedFiles);
+        if(!continueFlag)
+        {
+            return;
+        }
         newObservedFiles.clear();
-        observationSource->update(newPathsToObservedFiles);
         for (int i = 0; i < newPathsToObservedFiles.size(); ++i)
         {
             QFileInfo newFileInfo(newPathsToObservedFiles[i]);
