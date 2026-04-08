@@ -10,12 +10,12 @@ SourceFile::~SourceFile()
 
 }
 
-void SourceFile::update(QVector<QString>& pathsToObservedFiles_)
+bool SourceFile::update(QVector<QString>& pathsToObservedFiles_)
 {
     QFile sourceFile(sourceFilePath);
 
-    // open file for reading
-    if (sourceFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    // читаем данные с файла
+    if (sourceFile.open(QIODevice::ReadOnly | QIODevice::ExistingOnly | QIODevice::Text))
     {
         pathsToObservedFiles_.clear();
         QTextStream inFile(&sourceFile);
@@ -31,6 +31,7 @@ void SourceFile::update(QVector<QString>& pathsToObservedFiles_)
                 pathsToObservedFiles_.append(newFilePath);
             }
         }
+        return true;
     }
-    return;
+    return false;
 }
