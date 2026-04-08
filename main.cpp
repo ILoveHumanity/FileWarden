@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
 
-    SourceFile source("../FileWardenApp/source.txt");
+    SourceFile source("../FileWarden/TestFiles/source.txt");
     SleepTrigger trigger(100);
     ConsoleLog logger;
     FileStateSignalLogger fileStateSignalHandler(&logger);
