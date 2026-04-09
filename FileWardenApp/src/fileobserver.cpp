@@ -2,17 +2,16 @@
 #include <QDateTime>
 #include <QFileInfo>
 
-FileObserver::FileObserver() : observationSource_(nullptr), myFInfoContainer_(nullptr), observationTrigger_(nullptr), fileStateSignalHandler_(nullptr)
+FileObserver::FileObserver() : observationSource_(nullptr), myFInfoContainer_(nullptr), observationTrigger_(nullptr)
 {
 }
 
-FileObserver &FileObserver::getInstance(IObservationSource *observationSource, IMyFInfoContainer *myFInfoContainer, IObservationTrigger *observationTrigger, IFileStateSignalHandler *fileStateSignalHandler)
+FileObserver &FileObserver::getInstance(IObservationSource *observationSource, IMyFInfoContainer *myFInfoContainer, IObservationTrigger *observationTrigger)
 {
     static FileObserver sObject;
     sObject.setObservationSource(observationSource);
     sObject.setMyFInfoContainer(myFInfoContainer);
     sObject.setObservationTrigger(observationTrigger);
-    sObject.setFileStateSignalHandler(fileStateSignalHandler);
     return sObject;
 }
 
@@ -31,13 +30,8 @@ void FileObserver::setObservationTrigger(IObservationTrigger *observationTrigger
     observationTrigger_ = observationTrigger;
 }
 
-void FileObserver::setFileStateSignalHandler(IFileStateSignalHandler *fileStateSignalHandler)
+void FileObserver::connectFileStateSignalHandler(const IFileStateSignalHandler *fileStateSignalHandler)
 {
-    if(fileStateSignalHandler)
-    {
-        disconnect(fileStateSignalHandler);
-    }
-    fileStateSignalHandler_ = fileStateSignalHandler;
     if(fileStateSignalHandler)
     {
         connect(this, &FileObserver::fileExist, fileStateSignalHandler, &IFileStateSignalHandler::onFileExistence);
@@ -48,7 +42,7 @@ void FileObserver::setFileStateSignalHandler(IFileStateSignalHandler *fileStateS
 
 void FileObserver::startObservation()
 {
-    if (!observationSource_ && !observationTrigger_ && !myFInfoContainer_ && !fileStateSignalHandler_)
+    if (!observationSource_ && !observationTrigger_ && !myFInfoContainer_)
     {
         return;
     }

@@ -27,14 +27,13 @@ classDiagram
 		-IMyFInfoContainer* myFInfoContainer_
 		-IObservationSource* observationSource_
 		-IObservationTrigger* observationTrigger_
-		-IFileStateSignalHandler *fileStateSignalHandler_
 		-FileObserver()
 		-~FileObserver()
-		+static GetInstance(IObservationSource*, IMyFInfoContainer*, IObservationTrigger*, IFileStateSignalHandler*) FileObserver&
+		+static GetInstance(IObservationSource*, IMyFInfoContainer*, IObservationTrigger*) FileObserver&
 		+setObservationSource(IObservationSource*)
 		+setMyFInfoContainer(IMyFInfoContainer*)
 		+setObservationTrigger(IObservationTrigger*)
-		+setFileStateSignalHandler(IFileStateSignalHandler*)
+		+connectFileStateSignalHandler(const IFileStateSignalHandler*)
 		+startObservation()
 	}
     
@@ -77,7 +76,7 @@ classDiagram
 		+wait()*
 	}
 	class SleepObservationTrigger {
-		-unsigned int timeInterval
+		-unsigned int timeInterval_
 		+SleepObservationTrigger(unsigned int)
 		+~SleepObservationTrigger()
 		+wait()
@@ -125,15 +124,14 @@ classDiagram
 	IMyFInfoContainer <|.. MyFInfoVectorContainer
 
 	FileObserver o-- IObservationSource
-	IObservationSource <|.. SourceFile
+	IObservationSource <|.. ObservationSourceFile
 
 	FileObserver o-- IObservationTrigger
-	IObservationTrigger <|.. SleepTrigger
+	IObservationTrigger <|.. SleepObservationTrigger
 
-	FileObserver o-- IFileStateSignalHandler
-	IFileStateSignalHandler <|.. FileStateSignalLogger
-
-	ILog --o FileStateSignalLogger
+	FileObserver ..> IFileStateSignalHandler
+    FileStateSignalHandlerLogger ..|> IFileStateSignalHandler
+    FileStateSignalHandlerLogger o-- ILog
 	ILog <|.. ConsoleLog
 ```
 ### Диаграмма сигналов/слотов
