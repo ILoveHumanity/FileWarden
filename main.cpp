@@ -21,9 +21,11 @@ int main(int argc, char *argv[])
     ObservationSourceFile source(path);
     SleepObservationTrigger trigger(100);
     ConsoleLog logger;
-    FileStateSignalHandlerLogger fileStateSignalHandler(&logger);
     MyFInfoVectorContainer myFInfoContainer;
-    FileObserver &observer = FileObserver::getInstance(&source, &myFInfoContainer, &trigger, &fileStateSignalHandler);
+    FileObserver &observer = FileObserver::getInstance(&source, &myFInfoContainer, &trigger);
+    FileStateSignalHandlerLogger fileStateSignalHandler(&logger);
+    observer.connectFileStateSignalHandler(&fileStateSignalHandler);
+
     out << " Observation started." << Qt::endl;
     observer.startObservation(); // run cycle
     out << " Observation ended." << Qt::endl;

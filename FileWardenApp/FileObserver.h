@@ -13,11 +13,11 @@ class FileObserver : public QObject
 {
     Q_OBJECT
 public:
-    static FileObserver& getInstance(IObservationSource *observationSource, IMyFInfoContainer *myFInfoContainer, IObservationTrigger *observationTrigger, IFileStateSignalHandler *fileStateSignalHandler);
+    static FileObserver& getInstance(IObservationSource *observationSource, IMyFInfoContainer *myFInfoContainer, IObservationTrigger *observationTrigger);
     void setObservationSource(IObservationSource *observationSource);
     void setMyFInfoContainer(IMyFInfoContainer *myFInfoContainer);
     void setObservationTrigger(IObservationTrigger *observationTrigger);
-    void setFileStateSignalHandler(IFileStateSignalHandler *fileStateSignalHandler);
+    void connectFileStateSignalHandler(const IFileStateSignalHandler *fileStateSignalHandler);
     void startObservation();
 
 private:
@@ -30,11 +30,10 @@ private:
     IObservationSource *observationSource_;
     IMyFInfoContainer *myFInfoContainer_;
     IObservationTrigger *observationTrigger_;
-    IFileStateSignalHandler *fileStateSignalHandler_;
 
 signals:
-    void fileExist(const MyFInfo& data, const int& size);
-    void fileUpdate(const MyFInfo& data, const int& size);
+    void fileExist(const MyFInfo& data, const int size);
+    void fileUpdate(const MyFInfo& data, const int size);
     void fileMissing(const MyFInfo& data);
 };
 
