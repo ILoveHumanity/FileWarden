@@ -12,8 +12,8 @@ public:
     virtual ~IFileStateSignalHandler() = default;
 
 public slots:
-    virtual void onFileExistence(const MyFInfo& data, const int& size) = 0;
-    virtual void onFileUpdate(const MyFInfo& data, const int& size) = 0;
+    virtual void onFileExistence(const MyFInfo& data, const int size) = 0;
+    virtual void onFileUpdate(const MyFInfo& data, const int size) = 0;
     virtual void onFileMissing(const MyFInfo& data) = 0;
 };
 

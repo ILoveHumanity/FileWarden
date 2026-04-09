@@ -2,8 +2,8 @@
 #define ILog_H
 #pragma once
 
-#include <QString>
 #include <QObject>
+#include <QString>
 
 class ILog
 {

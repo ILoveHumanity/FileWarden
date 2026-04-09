@@ -3,13 +3,12 @@
 #pragma once
 
 #include "ILog.h"
-#include <QTextStream>
 
 class ConsoleLog : public ILog
 {
 public:
-    ~ConsoleLog();
-    ConsoleLog();
+    ~ConsoleLog() = default;
+    ConsoleLog() = default;
     void log(QString data);
 };
 

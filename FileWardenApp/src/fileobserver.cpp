@@ -1,50 +1,43 @@
 #include "FileObserver.h"
+#include <QDateTime>
+#include <QFileInfo>
 
-FileObserver::FileObserver()
+FileObserver::FileObserver() : observationSource_(nullptr), myFInfoContainer_(nullptr), observationTrigger_(nullptr), fileStateSignalHandler_(nullptr)
 {
-    observationSource = nullptr;
-    myFInfoContainer = nullptr;
-    observationTrigger = nullptr;
-    fileStateSignalHandler = nullptr;
 }
 
-FileObserver::~FileObserver()
-{
-
-}
-
-FileObserver &FileObserver::GetInstance(IObservationSource *observationSource_, IMyFInfoContainer *myFInfoContainer_, IObservationTrigger *observationTrigger_, IFileStateSignalHandler *fileStateSignalHandler_)
+FileObserver &FileObserver::getInstance(IObservationSource *observationSource, IMyFInfoContainer *myFInfoContainer, IObservationTrigger *observationTrigger, IFileStateSignalHandler *fileStateSignalHandler)
 {
     static FileObserver sObject;
-    sObject.setObservationSource(observationSource_);
-    sObject.setMyFInfoContainer(myFInfoContainer_);
-    sObject.setObservationTrigger(observationTrigger_);
-    sObject.setFileStateSignalHandler(fileStateSignalHandler_);
+    sObject.setObservationSource(observationSource);
+    sObject.setMyFInfoContainer(myFInfoContainer);
+    sObject.setObservationTrigger(observationTrigger);
+    sObject.setFileStateSignalHandler(fileStateSignalHandler);
     return sObject;
 }
 
-void FileObserver::setObservationSource(IObservationSource *observationSource_)
+void FileObserver::setObservationSource(IObservationSource *observationSource)
 {
-    observationSource = observationSource_;
+    observationSource_ = observationSource;
 }
 
-void FileObserver::setMyFInfoContainer(IMyFInfoContainer *myFInfoContainer_)
+void FileObserver::setMyFInfoContainer(IMyFInfoContainer *myFInfoContainer)
 {
-    myFInfoContainer = myFInfoContainer_;
+    myFInfoContainer_ = myFInfoContainer;
 }
 
-void FileObserver::setObservationTrigger(IObservationTrigger *observationTrigger_)
+void FileObserver::setObservationTrigger(IObservationTrigger *observationTrigger)
 {
-    observationTrigger = observationTrigger_;
+    observationTrigger_ = observationTrigger;
 }
 
-void FileObserver::setFileStateSignalHandler(IFileStateSignalHandler *fileStateSignalHandler_)
+void FileObserver::setFileStateSignalHandler(IFileStateSignalHandler *fileStateSignalHandler)
 {
     if(fileStateSignalHandler)
     {
         disconnect(fileStateSignalHandler);
     }
-    fileStateSignalHandler = fileStateSignalHandler_;
+    fileStateSignalHandler_ = fileStateSignalHandler;
     if(fileStateSignalHandler)
     {
         connect(this, &FileObserver::fileExist, fileStateSignalHandler, &IFileStateSignalHandler::onFileExistence);
@@ -55,29 +48,17 @@ void FileObserver::setFileStateSignalHandler(IFileStateSignalHandler *fileStateS
 
 void FileObserver::startObservation()
 {
-    if (!observationSource)
+    if (!observationSource_ && !observationTrigger_ && !myFInfoContainer_ && !fileStateSignalHandler_)
     {
         return;
     }
-    if(!observationTrigger)
-    {
-        return;
-    }
-    if (!myFInfoContainer)
-    {
-        return;
-    }
-    if (!fileStateSignalHandler)
-    {
-        return;
-    }
-    myFInfoContainer -> clear();
-    QVector<QString> newPathsToObservedFiles = myFInfoContainer->getAllPaths();
+    myFInfoContainer_ -> clear();
+    QVector<QString> newPathsToObservedFiles = myFInfoContainer_->getAllPaths();
     QVector<MyFInfo> newObservedFiles;
     bool continueFlag;
     while (true)
     {
-        continueFlag = observationSource->update(newPathsToObservedFiles);
+        continueFlag = observationSource_->update(newPathsToObservedFiles);
         if(!continueFlag)
         {
             return;
@@ -86,10 +67,10 @@ void FileObserver::startObservation()
         for (int i = 0; i < newPathsToObservedFiles.size(); ++i)
         {
             QFileInfo newFileInfo(newPathsToObservedFiles[i]);
-            MyFInfo newObservedFile(newFileInfo.absoluteFilePath(), newFileInfo.isFile(), newFileInfo.lastModified());
+            MyFInfo newObservedFile(newFileInfo.absoluteFilePath(), newFileInfo.isFile() && !newFileInfo.isSymLink(), newFileInfo.lastModified());
             int size = newFileInfo.size();
             newObservedFiles.append(newObservedFile);
-            MyFInfo observedFile = myFInfoContainer->getByPath(newObservedFile.getFilePath());
+            MyFInfo observedFile = myFInfoContainer_->getByPath(newObservedFile.getFilePath());
             // Если файл добавился под наблюдение || Если файл удалили/добавили
             if (observedFile.isNull() || observedFile.getExist() != newObservedFile.getExist())
             {
@@ -103,12 +84,12 @@ void FileObserver::startObservation()
                 }
             }
             // Если файл изменился
-            else if(observedFile.getLastModified() != newObservedFile.getLastModified())
+            else if( newObservedFile.getExist() && observedFile.getLastModified() != newObservedFile.getLastModified())
             {
                 emit fileUpdate(newObservedFile, size);
             }
         }
-        myFInfoContainer->setNewData(newObservedFiles);
-        observationTrigger->wait();
+        myFInfoContainer_->setNewData(newObservedFiles);
+        observationTrigger_->wait();
     }
 }

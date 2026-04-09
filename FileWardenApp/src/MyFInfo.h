@@ -7,18 +7,18 @@
 
 class MyFInfo
 {
-    QString filePath;
-    bool exist;
-    QDateTime lastModified;
+    QString filePath_;
+    bool exist_;
+    QDateTime lastModified_;
 public:
-    MyFInfo(QString filePath_ = QString(), bool exist_ = false, QDateTime lastModified_ = QDateTime());
+    MyFInfo(QString filePath = QString(), bool exist = false, QDateTime lastModified = QDateTime());
     ~MyFInfo();
     MyFInfo(const MyFInfo& a);
     MyFInfo& operator = (const MyFInfo& a);
     QString getFilePath() const;
     bool getExist() const;
     QDateTime getLastModified() const;
-    bool isNull();
+    bool isNull() const;
 };
 
 #endif // MyFInfo_H

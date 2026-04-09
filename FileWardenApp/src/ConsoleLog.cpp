@@ -1,13 +1,6 @@
 #include "ConsoleLog.h"
+#include <QTextStream>
 
-ConsoleLog::ConsoleLog()
-{
-
-}
-ConsoleLog::~ConsoleLog()
-{
-
-}
 void ConsoleLog::log(QString data)
 {
     QTextStream out(stdout);

@@ -1,47 +1,44 @@
 #include "MyFInfoVectorContainer.h"
+#include <QDateTime>
 
 MyFInfoVectorContainer::MyFInfoVectorContainer()
 {
-    VFilePath = QVector<QString>();
-    VExist = QVector<bool>();
-    VLastModified = QVector<QDateTime>();
+    VFilePath_ = QVector<QString>();
+    VExist_ = QVector<bool>();
+    VLastModified_ = QVector<QDateTime>();
 }
-MyFInfoVectorContainer::~MyFInfoVectorContainer()
+MyFInfo MyFInfoVectorContainer::getByPath(const QString& filePath)
 {
-
-}
-MyFInfo MyFInfoVectorContainer::getByPath(const QString& filePath_)
-{
-    int i = VFilePath.indexOf(filePath_);
+    int i = VFilePath_.indexOf(filePath);
     if (i == -1){
         return MyFInfo();
     }
-    return MyFInfo(VFilePath[i], VExist[i], VLastModified[i]);
+    return MyFInfo(VFilePath_[i], VExist_[i], VLastModified_[i]);
 }
-void MyFInfoVectorContainer::setNewData(const QVector<MyFInfo>& data_)
+void MyFInfoVectorContainer::setNewData(const QVector<MyFInfo>& data)
 {
-    VFilePath.clear();
-    VExist.clear();
-    VLastModified.clear();
-    for (int i = 0; i < data_.size(); ++i){
-        VFilePath.append(data_[i].getFilePath());
-        VExist.append(data_[i].getExist());
-        VLastModified.append(data_[i].getLastModified());
+    VFilePath_.clear();
+    VExist_.clear();
+    VLastModified_.clear();
+    for (int i = 0; i < data.size(); ++i){
+        VFilePath_.append(data[i].getFilePath());
+        VExist_.append(data[i].getExist());
+        VLastModified_.append(data[i].getLastModified());
     }
-    VFilePath.squeeze();
-    VExist.squeeze();
-    VLastModified.squeeze();
+    VFilePath_.squeeze();
+    VExist_.squeeze();
+    VLastModified_.squeeze();
 }
 QVector<QString> MyFInfoVectorContainer::getAllPaths()
 {
-    return VFilePath;
+    return VFilePath_;
 }
 void MyFInfoVectorContainer::clear()
 {
-    VFilePath.clear();
-    VFilePath.squeeze();
-    VExist.clear();
-    VExist.squeeze();
-    VLastModified.clear();
-    VLastModified.squeeze();
+    VFilePath_.clear();
+    VFilePath_.squeeze();
+    VExist_.clear();
+    VExist_.squeeze();
+    VLastModified_.clear();
+    VLastModified_.squeeze();
 }

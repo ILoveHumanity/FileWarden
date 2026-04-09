@@ -1,10 +1,10 @@
 #include "MyFInfo.h"
 
-MyFInfo::MyFInfo(QString filePath_, bool exist_, QDateTime lastModified_)
+MyFInfo::MyFInfo(QString filePath, bool exist, QDateTime lastModified)
 {
-    filePath = filePath_;
-    exist = exist_;
-    lastModified = lastModified_;
+    filePath_ = filePath;
+    exist_ = exist;
+    lastModified_ = lastModified;
 }
 MyFInfo::~MyFInfo()
 {
@@ -12,32 +12,32 @@ MyFInfo::~MyFInfo()
 }
 MyFInfo::MyFInfo(const MyFInfo& a)
 {
-    filePath = a.filePath;
-    exist = a.exist;
-    lastModified = a.lastModified;
+    filePath_ = a.filePath_;
+    exist_ = a.exist_;
+    lastModified_ = a.lastModified_;
 }
 MyFInfo& MyFInfo::operator = (const MyFInfo& a)
 {
     if (this != &a) {
-        filePath = a.filePath;
-        exist = a.exist;
-        lastModified = a.lastModified;
+        filePath_ = a.filePath_;
+        exist_ = a.exist_;
+        lastModified_ = a.lastModified_;
     }
     return *this;
 }
 QString MyFInfo::getFilePath() const
 {
-    return filePath;
+    return filePath_;
 }
 bool MyFInfo::getExist() const
 {
-    return exist;
+    return exist_;
 }
 QDateTime MyFInfo::getLastModified() const
 {
-    return lastModified;
+    return lastModified_;
 }
-bool MyFInfo::isNull()
+bool MyFInfo::isNull() const
 {
-    return filePath.isNull() && !exist && lastModified.isNull();
+    return filePath_.isNull() && !exist_ && lastModified_.isNull();
 }

@@ -6,20 +6,21 @@
 #include "MyFInfo.h"
 #include <QVector>
 #include <QString>
-#include <QDateTime>
 
 class MyFInfoVectorContainer : public IMyFInfoContainer
 {
-    QVector<QString> VFilePath;
-    QVector<bool> VExist;
-    QVector<QDateTime> VLastModified;
 public:
     MyFInfoVectorContainer();
-    ~MyFInfoVectorContainer();
-    MyFInfo getByPath(const QString& filePath_);
+    ~MyFInfoVectorContainer() = default;
+    MyFInfo getByPath(const QString& filePath);
     void setNewData(const QVector<MyFInfo>& newData);
     QVector<QString> getAllPaths();
     void clear();
+
+private:
+    QVector<QString> VFilePath_;
+    QVector<bool> VExist_;
+    QVector<QDateTime> VLastModified_;
 };
 
 #endif // MyFInfoVectorContainer_H

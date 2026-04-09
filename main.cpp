@@ -1,22 +1,33 @@
 #include <QCoreApplication>
 #include "FileObserver.h"
 #include "ConsoleLog.h"
-#include "FileStateSignalLogger.h"
-#include "SourceFile.h"
-#include "SleepTrigger.h"
+#include "FileStateSignalHandlerLogger.h"
+#include "ObservationSourceFile.h"
+#include "SleepObservationTrigger.h"
 #include "MyFInfoVectorContainer.h"
+#include <QString>
+#include <QTextStream>
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication app(argc, argv);
+//    QCoreApplication app(argc, argv);
+    QString path;
+    QTextStream in(stdin);
+    QTextStream out(stdout);
+    out << "Enter path to ObservationSourceFile: " << Qt::flush;
+    path = in.readLine();
+    //path = "../FileWarden/TestFiles/source.txt";
 
-    SourceFile source("../FileWarden/TestFiles/source.txt");
-    SleepTrigger trigger(100);
+    ObservationSourceFile source(path);
+    SleepObservationTrigger trigger(100);
     ConsoleLog logger;
-    FileStateSignalLogger fileStateSignalHandler(&logger);
+    FileStateSignalHandlerLogger fileStateSignalHandler(&logger);
     MyFInfoVectorContainer myFInfoContainer;
-    FileObserver &observer = FileObserver::GetInstance(&source, &myFInfoContainer, &trigger, &fileStateSignalHandler);
+    FileObserver &observer = FileObserver::getInstance(&source, &myFInfoContainer, &trigger, &fileStateSignalHandler);
+    out << " Observation started." << Qt::endl;
     observer.startObservation(); // run cycle
-    qDebug("End");
-    return app.exec();
+    out << " Observation ended." << Qt::endl;
+
+    return 0;
+//    return app.exec();
 }
