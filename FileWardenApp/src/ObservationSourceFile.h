@@ -5,11 +5,21 @@
 #include <IObservationSource.h>
 #include <QDateTime>
 
+/// @brief Источник списка наблюдения из текстового файла.
+/// @details Реализация интерфейса IObservationSource
 class ObservationSourceFile : public IObservationSource
 {
 public:
+    /// @brief Конструктор.
+    /// @param[in] sourceFilePath Путь к файлу со списком путей для наблюдения.
     ObservationSourceFile(QString sourceFilePath);
+
+    /// @brief Деструктор.
     ~ObservationSourceFile() = default;
+
+    /// @brief Обновить список путей для наблюдения.
+    /// @param[in,out] newPathsToObservedFiles Вектор для сохранения новых путей
+    /// @return true в случае успешного обновления, false при ошибке
     bool update(QVector<QString>& pathsToObservedFiles);
 
 private:

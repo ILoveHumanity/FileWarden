@@ -42,22 +42,28 @@ void FileObserver::connectFileStateSignalHandler(const IFileStateSignalHandler *
 
 void FileObserver::startObservation()
 {
+    // Проверяем наличие всех необходимых сущностей
     if (!observationSource_ && !observationTrigger_ && !myFInfoContainer_)
     {
         return;
     }
+    // Очищаем хранилище информации
     myFInfoContainer_ -> clear();
+    // Получаем начальный список наблюдаемых файлов
     QVector<QString> newPathsToObservedFiles = myFInfoContainer_->getAllPaths();
     QVector<MyFInfo> newObservedFiles;
     bool continueFlag;
     while (true)
     {
+        // Обновляем список наблюдаемых файлов, в случае ошибки заканчиваем наблюдение
         continueFlag = observationSource_->update(newPathsToObservedFiles);
         if(!continueFlag)
         {
             return;
         }
+        // Очищаем локальное хранилище информации
         newObservedFiles.clear();
+        // Для каждого файла устанавливаем его параметры, сравниваем их с предыдущими, создавая сигналы
         for (int i = 0; i < newPathsToObservedFiles.size(); ++i)
         {
             QFileInfo newFileInfo(newPathsToObservedFiles[i]);
@@ -78,12 +84,14 @@ void FileObserver::startObservation()
                 }
             }
             // Если файл изменился
-            else if( newObservedFile.getExist() && observedFile.getLastModified() != newObservedFile.getLastModified())
+            else if(newObservedFile.getExist() && observedFile.getLastModified() != newObservedFile.getLastModified())
             {
                 emit fileUpdate(newObservedFile, size);
             }
         }
+        // Устанавливаем новые данные
         myFInfoContainer_->setNewData(newObservedFiles);
+        // Ожидаем следующего цикла наблюдения
         observationTrigger_->wait();
     }
 }

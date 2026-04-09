@@ -4,11 +4,19 @@
 
 #include "ILog.h"
 
+/// @brief Класс для логирования сообщений в консоль.
+/// @details Реализация интерфейса ILog
 class ConsoleLog : public ILog
 {
 public:
-    ~ConsoleLog() = default;
+    /// @brief Конструктор.
     ConsoleLog() = default;
+
+    /// @brief Деструктор.
+    ~ConsoleLog() = default;
+
+    /// @brief Записать информацию в консоль.
+    /// @param[in] data Текстовая информация для записи
     void log(QString data);
 };
 

@@ -6,10 +6,6 @@ MyFInfo::MyFInfo(QString filePath, bool exist, QDateTime lastModified)
     exist_ = exist;
     lastModified_ = lastModified;
 }
-MyFInfo::~MyFInfo()
-{
-
-}
 MyFInfo::MyFInfo(const MyFInfo& a)
 {
     filePath_ = a.filePath_;
