@@ -6,7 +6,7 @@
 #include <QDateTime>
 
 /// @brief Источник списка наблюдения из текстового файла.
-/// @details Реализация интерфейса IObservationSource
+/// Реализация интерфейса IObservationSource
 class ObservationSourceFile : public IObservationSource
 {
 public:
@@ -23,8 +23,8 @@ public:
     bool update(QVector<QString>& pathsToObservedFiles);
 
 private:
-    QString sourceFilePath_;
-    QDateTime lastModified_;
+    QString sourceFilePath_; ///< Путь к файлу со списком наблюдения.
+    QDateTime lastModified_; ///< Время последнего изменения.
 };
 
 #endif // ObservationSourceFile_H

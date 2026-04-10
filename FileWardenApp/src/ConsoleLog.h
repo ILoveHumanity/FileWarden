@@ -5,7 +5,7 @@
 #include "ILog.h"
 
 /// @brief Класс для логирования сообщений в консоль.
-/// @details Реализация интерфейса ILog
+/// Реализация интерфейса ILog
 class ConsoleLog : public ILog
 {
 public:

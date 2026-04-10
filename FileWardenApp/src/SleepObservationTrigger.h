@@ -5,7 +5,7 @@
 #include "IObservationTrigger.h"
 
 /// @brief Триггер задержки между циклами наблюдения на основе QThread::msleep.
-/// @details Реализация интерфейса IObservationTrigger
+/// Реализация интерфейса IObservationTrigger
 class SleepObservationTrigger : public IObservationTrigger
 {
 public:

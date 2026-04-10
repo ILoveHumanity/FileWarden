@@ -2,7 +2,6 @@
 #define IObservationSource_H
 #pragma once
 
-#include <QFileInfo>
 #include <QVector>
 #include <QString>
 

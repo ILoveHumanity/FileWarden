@@ -52,18 +52,16 @@ void FileObserver::startObservation()
     // Получаем начальный список наблюдаемых файлов
     QVector<QString> newPathsToObservedFiles = myFInfoContainer_->getAllPaths();
     QVector<MyFInfo> newObservedFiles;
-    bool continueFlag;
     while (true)
     {
         // Обновляем список наблюдаемых файлов, в случае ошибки заканчиваем наблюдение
-        continueFlag = observationSource_->update(newPathsToObservedFiles);
-        if(!continueFlag)
+        if(!observationSource_->update(newPathsToObservedFiles))
         {
             return;
         }
         // Очищаем локальное хранилище информации
         newObservedFiles.clear();
-        // Для каждого файла устанавливаем его параметры, сравниваем их с предыдущими, создавая сигналы
+        // Для каждого файла устанавливаем его параметры, сравниваем их с предыдущими, генерируя сигналы
         for (int i = 0; i < newPathsToObservedFiles.size(); ++i)
         {
             QFileInfo newFileInfo(newPathsToObservedFiles[i]);

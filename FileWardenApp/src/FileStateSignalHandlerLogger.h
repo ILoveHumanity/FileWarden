@@ -6,7 +6,7 @@
 #include "ILog.h"
 
 /// @brief Обработчик сигналов состояния файлов с логированием.
-/// @details Реализация интерфейса IFileStateSignalHandler
+/// Реализация интерфейса IFileStateSignalHandler
 class FileStateSignalHandlerLogger : public IFileStateSignalHandler
 {
     Q_OBJECT

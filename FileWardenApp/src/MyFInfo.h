@@ -8,9 +8,6 @@
 /// @brief Класс для хранения информации о файле.
 class MyFInfo
 {
-    QString filePath_; ///< Путь к файлу.
-    bool exist_;  ///< Флаг существования файла.
-    QDateTime lastModified_; ///< Время последней модификации файла.
 public:
     /// @brief Конструктор с параметрами по умолчанию.
     /// @param[in] filePath Путь к файлу (по умолчанию пустая строка)
@@ -46,6 +43,11 @@ public:
     /// @details Объект считается нулевым, если путь пустой, флаг существования равен false и время последней модификации не установленно
     /// @return true, если объект нулевой, иначе false
     bool isNull() const;
+
+private:
+    QString filePath_; ///< Путь к файлу.
+    bool exist_;  ///< Флаг существования файла.
+    QDateTime lastModified_; ///< Время последней модификации файла.
 };
 
 #endif // MyFInfo_H

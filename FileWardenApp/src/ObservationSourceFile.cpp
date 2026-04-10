@@ -21,6 +21,7 @@ bool ObservationSourceFile::update(QVector<QString>& pathsToObservedFiles)
         {
             return true;
         }
+        lastModified_ = sourceFileInfo.lastModified();
         QFile sourceFile(sourceFilePath_);
         // Иначе обновляем данные читая с файла
         if (sourceFile.open(QIODevice::ReadOnly | QIODevice::ExistingOnly | QIODevice::Text))

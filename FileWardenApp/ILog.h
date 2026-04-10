@@ -2,7 +2,6 @@
 #define ILog_H
 #pragma once
 
-#include <QObject>
 #include <QString>
 
 /// @brief Интерфейс логирования.
