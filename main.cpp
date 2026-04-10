@@ -20,23 +20,56 @@ int main(int argc, char *argv[])
     QString path;
     QTextStream in(stdin);
     QTextStream out(stdout);
-    out << "Enter path to ObservationSourceFile: " << Qt::flush;
-    path = in.readLine();
-    //path = "../FileWarden/TestFiles/source.txt";
 
-    // Создаем все необходимые сущности
-    ObservationSourceFile source(path);
-    SleepObservationTrigger trigger(100);
+    SleepObservationTrigger trigger;
     ConsoleLog logger;
     MyFInfoVectorContainer myFInfoContainer;
-    FileObserver &observer = FileObserver::getInstance(&source, &myFInfoContainer, &trigger);
-    FileStateSignalHandlerLogger fileStateSignalHandler(&logger);
-    observer.connectFileStateSignalHandler(&fileStateSignalHandler);
 
-    // Запускаем наблюдение
-    out << " Observation started." << Qt::endl;
-    observer.startObservation(); // run cycle
-    out << " Observation ended." << Qt::endl;
+//  проверки на некорректные передаваемые значения
+    path = "../FileWarden/TestFiles/source.txt";
+    ObservationSourceFile source(path);
+    FileObserver &observer = FileObserver::getInstance(nullptr, &myFInfoContainer, &trigger);
+    {
+        out << " Observation started." << Qt::endl;
+        observer.startObservation(); // run cycle
+        out << " Observation ended." << Qt::endl;
+    }
+
+    observer.setObservationSource(&source);
+    observer.setMyFInfoContainer(nullptr);
+    {
+        out << " Observation started." << Qt::endl;
+        observer.startObservation(); // run cycle
+        out << " Observation ended." << Qt::endl;
+    }
+
+    observer.setMyFInfoContainer(&myFInfoContainer);
+    observer.setObservationTrigger(nullptr);
+    {
+        out << " Observation started." << Qt::endl;
+        observer.startObservation(); // run cycle
+        out << " Observation ended." << Qt::endl;
+    }
+
+    observer.setObservationTrigger(&trigger);
+    path = "../FileWarden/TestFiles/source1.txt";
+    ObservationSourceFile source1(path);
+    observer.setObservationSource(&source1);
+    {
+        out << " Observation started." << Qt::endl;
+        observer.startObservation(); // run cycle
+        out << " Observation ended." << Qt::endl;
+    }
+
+//  проверка на отработку без логгера
+    observer.setObservationSource(&source);
+    FileStateSignalHandlerLogger fileStateSignalHandler(nullptr);
+    observer.connectFileStateSignalHandler(&fileStateSignalHandler);
+    {
+        out << " Observation started." << Qt::endl;
+        observer.startObservation(); // run cycle
+        out << " Observation ended." << Qt::endl;
+    }
 
     return 0;
 //    return app.exec();
