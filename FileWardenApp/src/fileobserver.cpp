@@ -43,7 +43,7 @@ void FileObserver::connectFileStateSignalHandler(const IFileStateSignalHandler *
 void FileObserver::startObservation()
 {
     // Проверяем наличие всех необходимых сущностей
-    if (!observationSource_ && !observationTrigger_ && !myFInfoContainer_)
+    if (!observationSource_ || !observationTrigger_ || !myFInfoContainer_)
     {
         return;
     }
