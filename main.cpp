@@ -64,6 +64,11 @@ int main(int argc, char *argv[])
 //  проверка на отработку без логгера
     observer.setObservationSource(&source);
     FileStateSignalHandlerLogger fileStateSignalHandler(nullptr);
+    FileObserver &observer = FileObserver::getInstance();
+    observer.setObservationSource(&source);
+    observer.setMyFInfoContainer(&myFInfoContainer);
+    observer.setObservationTrigger(&trigger);
+    FileStateSignalHandlerLogger fileStateSignalHandler(&logger);
     observer.connectFileStateSignalHandler(&fileStateSignalHandler);
     {
         out << " Observation started." << Qt::endl;

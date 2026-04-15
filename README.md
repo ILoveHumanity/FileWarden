@@ -29,7 +29,7 @@ classDiagram
 		-IObservationTrigger* observationTrigger_
 		-FileObserver()
 		-~FileObserver()
-		+static GetInstance(IObservationSource*, IMyFInfoContainer*, IObservationTrigger*) FileObserver&
+		+static GetInstance() FileObserver&
 		+setObservationSource(IObservationSource*)
 		+setMyFInfoContainer(IMyFInfoContainer*)
 		+setObservationTrigger(IObservationTrigger*)

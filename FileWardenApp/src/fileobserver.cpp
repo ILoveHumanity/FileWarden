@@ -6,12 +6,9 @@ FileObserver::FileObserver() : observationSource_(nullptr), myFInfoContainer_(nu
 {
 }
 
-FileObserver &FileObserver::getInstance(IObservationSource *observationSource, IMyFInfoContainer *myFInfoContainer, IObservationTrigger *observationTrigger)
+FileObserver &FileObserver::getInstance()
 {
     static FileObserver sObject;
-    sObject.setObservationSource(observationSource);
-    sObject.setMyFInfoContainer(myFInfoContainer);
-    sObject.setObservationTrigger(observationTrigger);
     return sObject;
 }
 
@@ -65,7 +62,7 @@ void FileObserver::startObservation()
         for (int i = 0; i < newPathsToObservedFiles.size(); ++i)
         {
             QFileInfo newFileInfo(newPathsToObservedFiles[i]);
-            MyFInfo newObservedFile(newFileInfo.absoluteFilePath(), newFileInfo.isFile() && !newFileInfo.isSymLink(), newFileInfo.lastModified());
+            MyFInfo newObservedFile(newFileInfo.absoluteFilePath(), newFileInfo.isFile() && !newFileInfo.isSymLink() && newFileInfo.size() != 0, newFileInfo.lastModified());
             int size = newFileInfo.size();
             newObservedFiles.append(newObservedFile);
             MyFInfo observedFile = myFInfoContainer_->getByPath(newObservedFile.getFilePath());
