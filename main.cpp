@@ -28,7 +28,10 @@ int main(int argc, char *argv[])
 //  проверки на некорректные передаваемые значения
     path = "../FileWarden/TestFiles/source.txt";
     ObservationSourceFile source(path);
-    FileObserver &observer = FileObserver::getInstance(nullptr, &myFInfoContainer, &trigger);
+    FileObserver &observer = FileObserver::getInstance();
+    observer.setObservationSource(nullptr);
+    observer.setMyFInfoContainer(&myFInfoContainer);
+    observer.setObservationTrigger(&trigger);
     {
         out << " Observation started." << Qt::endl;
         observer.startObservation(); // run cycle
@@ -64,11 +67,6 @@ int main(int argc, char *argv[])
 //  проверка на отработку без логгера
     observer.setObservationSource(&source);
     FileStateSignalHandlerLogger fileStateSignalHandler(nullptr);
-    FileObserver &observer = FileObserver::getInstance();
-    observer.setObservationSource(&source);
-    observer.setMyFInfoContainer(&myFInfoContainer);
-    observer.setObservationTrigger(&trigger);
-    FileStateSignalHandlerLogger fileStateSignalHandler(&logger);
     observer.connectFileStateSignalHandler(&fileStateSignalHandler);
     {
         out << " Observation started." << Qt::endl;
