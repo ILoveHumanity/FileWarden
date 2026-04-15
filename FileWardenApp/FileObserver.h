@@ -16,11 +16,8 @@ class FileObserver : public QObject
     Q_OBJECT
 public:
     /// @brief Метод для получения единственного экземпляра наблюдателя.
-    /// @param[in] observationSource Указатель на источник списка наблюдения
-    /// @param[in] myFInfoContainer Указатель на контейнер для хранения информации о файлах
-    /// @param[in] observationTrigger Указатель на триггер задержки между циклами наблюдения
     /// @return Ссылка на единственный экземпляр FileObserve
-    static FileObserver& getInstance(IObservationSource *observationSource, IMyFInfoContainer *myFInfoContainer, IObservationTrigger *observationTrigger);
+    static FileObserver& getInstance();
 
     /// @brief Установить источник списка наблюдения.
     /// @param[in] observationSource Указатель на источник списка наблюдения

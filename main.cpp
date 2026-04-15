@@ -29,7 +29,10 @@ int main(int argc, char *argv[])
     SleepObservationTrigger trigger(100);
     ConsoleLog logger;
     MyFInfoVectorContainer myFInfoContainer;
-    FileObserver &observer = FileObserver::getInstance(&source, &myFInfoContainer, &trigger);
+    FileObserver &observer = FileObserver::getInstance();
+    observer.setObservationSource(&source);
+    observer.setMyFInfoContainer(&myFInfoContainer);
+    observer.setObservationTrigger(&trigger);
     FileStateSignalHandlerLogger fileStateSignalHandler(&logger);
     observer.connectFileStateSignalHandler(&fileStateSignalHandler);
 

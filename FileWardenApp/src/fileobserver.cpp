@@ -6,12 +6,9 @@ FileObserver::FileObserver() : observationSource_(nullptr), myFInfoContainer_(nu
 {
 }
 
-FileObserver &FileObserver::getInstance(IObservationSource *observationSource, IMyFInfoContainer *myFInfoContainer, IObservationTrigger *observationTrigger)
+FileObserver &FileObserver::getInstance()
 {
     static FileObserver sObject;
-    sObject.setObservationSource(observationSource);
-    sObject.setMyFInfoContainer(myFInfoContainer);
-    sObject.setObservationTrigger(observationTrigger);
     return sObject;
 }
 
