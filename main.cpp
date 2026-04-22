@@ -24,13 +24,13 @@ int main(int argc, char *argv[])
     //path = "../FileWarden/TestFiles/source.txt";
 
     // Создаем все необходимые сущности
-    ObservationSourceFile source(path);
-    SleepObservationTrigger trigger(100);
-    ConsoleLog logger;
+    auto source = new ObservationSourceFile(path); // ObservationSourceFile source(path);
+    auto trigger = new SleepObservationTrigger(100); // SleepObservationTrigger trigger(100);
+    auto logger = new ConsoleLog; // ConsoleLog logger;
     FileObserver &observer = FileObserver::getInstance();
-    observer.setObservationSource(&source);
-    observer.setObservationTrigger(&trigger);
-    FileStateSignalHandlerLogger fileStateSignalHandler(&logger);
+    observer.setObservationSource(std::move(source));
+    observer.setObservationTrigger(std::move(trigger));
+    FileStateSignalHandlerLogger fileStateSignalHandler(std::move(logger));
     observer.connectFileStateSignalHandler(&fileStateSignalHandler);
 
     // Запускаем наблюдение
