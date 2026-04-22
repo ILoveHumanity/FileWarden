@@ -9,8 +9,6 @@ CONFIG += c++17 cmdline
 SOURCES += \
         FileWardenApp/src/ConsoleLog.cpp \
         FileWardenApp/src/FileStateSignalHandlerLogger.cpp \
-        FileWardenApp/src/MyFInfo.cpp \
-        FileWardenApp/src/MyFInfoVectorContainer.cpp \
         FileWardenApp/src/ObservationSourceFile.cpp \
         FileWardenApp/src/FileObserver.cpp \
         FileWardenApp/src/SleepObservationTrigger.cpp \
@@ -26,11 +24,9 @@ HEADERS += \
     FileWardenApp/src/FileStateSignalHandlerLogger.h \
     FileWardenApp/src/MyFInfo.h \
     FileWardenApp/IObservationSource.h \
-    FileWardenApp/IMyFInfoContainer.h \
     FileWardenApp/IObservationTrigger.h \
     FileWardenApp/IFileStateSignalHandler.h \
     FileWardenApp/ILog.h \
-    FileWardenApp/src/MyFInfoVectorContainer.h \
     FileWardenApp/src/ObservationSourceFile.h \
     FileWardenApp/src/ConsoleLog.h \
     FileWardenApp/src/SleepObservationTrigger.h

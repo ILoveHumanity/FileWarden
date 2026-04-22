@@ -4,7 +4,6 @@
 #include "FileStateSignalHandlerLogger.h"
 #include "ObservationSourceFile.h"
 #include "SleepObservationTrigger.h"
-#include "MyFInfoVectorContainer.h"
 #include <QString>
 #include <QTextStream>
 
@@ -28,10 +27,8 @@ int main(int argc, char *argv[])
     ObservationSourceFile source(path);
     SleepObservationTrigger trigger(100);
     ConsoleLog logger;
-    MyFInfoVectorContainer myFInfoContainer;
     FileObserver &observer = FileObserver::getInstance();
     observer.setObservationSource(&source);
-    observer.setMyFInfoContainer(&myFInfoContainer);
     observer.setObservationTrigger(&trigger);
     FileStateSignalHandlerLogger fileStateSignalHandler(&logger);
     observer.connectFileStateSignalHandler(&fileStateSignalHandler);

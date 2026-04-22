@@ -8,24 +8,24 @@ void FileStateSignalHandlerLogger::setLogger(ILog *logger)
 {
     logger_ = logger;
 }
-void FileStateSignalHandlerLogger::onFileExistence(const MyFInfo& data, const int size)
+void FileStateSignalHandlerLogger::onFileExistence(const QString& filePath, const int size)
 {
     if(logger_)
     {
-        logger_ -> log("[EXIST]\t" + data.getFilePath() + "\tsize: [" + QString::number(size) + " B]");
+        logger_ -> log("[EXIST]\t" + filePath + "\tsize: [" + QString::number(size) + " B]");
     }
 }
-void FileStateSignalHandlerLogger::onFileUpdate(const MyFInfo& data, const int size)
+void FileStateSignalHandlerLogger::onFileUpdate(const QString& filePath, const QDateTime& lastModified, const int size)
 {
     if(logger_)
     {
-        logger_ -> log("[UPDATED]\t" + data.getFilePath() + "\tsize: [" + QString::number(size) + " B] " + data.getLastModified().toString("dd.MM hh:mm:ss"));
+        logger_ -> log("[UPDATED]\t" + filePath + "\tsize: [" + QString::number(size) + " B] " + lastModified.toString("dd.MM hh:mm:ss"));
     }
 }
-void FileStateSignalHandlerLogger::onFileMissing(const MyFInfo& data)
+void FileStateSignalHandlerLogger::onFileMissing(const QString& filePath)
 {
     if(logger_)
     {
-        logger_ -> log("[MISSING]\t" + data.getFilePath());
+        logger_ -> log("[MISSING]\t" + filePath);
     }
 }

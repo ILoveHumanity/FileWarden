@@ -3,7 +3,8 @@
 #pragma once
 
 #include <QObject>
-#include <MyFInfo.h>
+#include <QString>
+#include <QDateTime>
 
 /// @brief Интерфейс обработчика сигналов состояния файлов.
 class IFileStateSignalHandler : public QObject
@@ -15,18 +16,19 @@ public:
 
 public slots:
     /// @brief Обработчик события существования файла.
-    /// @param[in] data Информация о файле
+    /// @param[in] filePath Путь до файла
     /// @param[in] size Размер файла в байтах
-    virtual void onFileExistence(const MyFInfo& data, const int size) = 0;
+    virtual void onFileExistence(const QString& filePath, const int size) = 0;
 
     /// @brief Обработчик события обновления файла.
-    /// @param[in] data Информация о файле
+    /// @param[in] filePath Путь до файла
+    /// @param[in] lastModified Время последнего изменения файла
     /// @param[in] size Новый размер файла в байтах
-    virtual void onFileUpdate(const MyFInfo& data, const int size) = 0;
+    virtual void onFileUpdate(const QString& filePath, const QDateTime& lastModified, const int size) = 0;
 
     /// @brief Обработчик события отсутствия файла.
-    /// @param[in] data Информация о файле
-    virtual void onFileMissing(const MyFInfo& data) = 0;
+    /// @param[in] filePath Путь до файла
+    virtual void onFileMissing(const QString& filePath) = 0;
 };
 
 

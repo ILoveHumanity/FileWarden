@@ -24,50 +24,29 @@
 ```mermaid
 classDiagram
 	class FileObserver {
-		-IMyFInfoContainer* myFInfoContainer_
+		-QVector~MyFInfo~ observedFiles_
 		-IObservationSource* observationSource_
 		-IObservationTrigger* observationTrigger_
 		-FileObserver()
 		-~FileObserver()
 		+static GetInstance() FileObserver&
 		+setObservationSource(IObservationSource*)
-		+setMyFInfoContainer(IMyFInfoContainer*)
 		+setObservationTrigger(IObservationTrigger*)
 		+connectFileStateSignalHandler(const IFileStateSignalHandler*)
 		+startObservation()
-	}
-    
-	class IMyFInfoContainer {
-		<<interface>>
-		+~IMyFInfoContainer()*
-		+getByPath(const QString&) MyFInfo*
-		+getAllPaths() QVector~QString~*
-		+setNewData(const QVector~MyFInfo~&)*
-		+clear()*
-	}
-	class MyFInfoVectorContainer {
-		-QVector~QString~ VFilePath_
-		-QVector~bool~ VExist_
-		-QVector~QDateTime~ VLastModified_
-		+MyFInfoVectorContainer()
-		+~MyFInfoVectorContainer()
-		+getByPath(const QString&) MyFInfo
-		+getAllPaths() QVector~QString~
-		+setNewData(const QVector~MyFInfo~&)
-		+clear()
 	}
 
 	class IObservationSource {
 		<<interface>>
 		+~IObservationSource()*
-		+update(QVector~QString~&) bool*
+		+update(QVector~MyFInfo~&) bool*
 	}
 	class ObservationSourceFile {
 		-QString sourceFilePath_
 		-QDateTime lastModified_
 		+ObservationSourceFile(QString)
 		+~ObservationSourceFile()
-		+update(QVector~QString~&) bool
+		+update(QVector~MyFInfo~&) bool
 	}
 
 	class IObservationTrigger {
@@ -104,25 +83,6 @@ classDiagram
 		+log(QString)
 	}
 
-	class MyFInfo {
-		-QString filePath_
-		-bool exist_
-		-QDateTime lastModified_
-		+MyFInfo(QString, bool, QDateTime)
-		+~MyFInfo()
-		+MyFInfo(const MyFInfo&)
-		+operator=(const MyFInfo&)
-		+getFilePath() QString
-		+getExist() bool
-		+getLastModified() QDateTime
-		+isNull() bool
-	}
-
-	MyFInfo <.. IMyFInfoContainer
-
-	FileObserver o-- IMyFInfoContainer
-	IMyFInfoContainer <|.. MyFInfoVectorContainer
-
 	FileObserver o-- IObservationSource
 	IObservationSource <|.. ObservationSourceFile
 
@@ -130,8 +90,8 @@ classDiagram
 	IObservationTrigger <|.. SleepObservationTrigger
 
 	FileObserver ..> IFileStateSignalHandler
-    FileStateSignalHandlerLogger ..|> IFileStateSignalHandler
-    FileStateSignalHandlerLogger o-- ILog
+    	FileStateSignalHandlerLogger ..|> IFileStateSignalHandler
+    	FileStateSignalHandlerLogger o-- ILog
 	ILog <|.. ConsoleLog
 ```
 ### Диаграмма сигналов/слотов
