@@ -12,10 +12,9 @@ struct MyFInfo
     QString filePath_; ///< Путь к файлу.
     bool exist_; ///< Флаг существования файла.
     QDateTime lastModified_; ///< Время последней модификации файла.
-
-    bool operator== (const MyFInfo& a){
-        return filePath_ == a.filePath_;
-    }
 };
-
+inline bool operator== (const MyFInfo& a, const MyFInfo& b) noexcept
+{
+    return a.filePath_ == b.filePath_;
+}
 #endif // MyFInfo_H
