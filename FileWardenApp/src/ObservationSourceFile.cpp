@@ -4,10 +4,8 @@
 #include <QTextStream>
 #include <QFileInfo>
 
-ObservationSourceFile::ObservationSourceFile(QString sourceFilePath)
+ObservationSourceFile::ObservationSourceFile(QString sourceFilePath) : sourceFilePath_(sourceFilePath), lastModified_()
 {
-    sourceFilePath_ = sourceFilePath;
-    lastModified_ = QDateTime();
 }
 
 bool ObservationSourceFile::update(QVector<MyFInfo>& observedFiles)
@@ -31,7 +29,7 @@ bool ObservationSourceFile::update(QVector<MyFInfo>& observedFiles)
             while (!inFile.atEnd())
             {
                 QString newFilePath = inFile.readLine();
-                if (newFilePath.isEmpty())
+                if (newFilePath.isEmpty()) // Пропускаем пустые строки
                 {
                     continue;
                 }
@@ -40,12 +38,12 @@ bool ObservationSourceFile::update(QVector<MyFInfo>& observedFiles)
                 if(newObservedFiles.indexOf(newMyFInfo) == -1) // Проверяем на повторы
                 {
                     int i = observedFiles.indexOf(newMyFInfo); // Проверяем на наличие в предыдущем списке наблюдения
-                    if(i == -1)
+                    if(i == -1) // Если новый, добавляем с флагом не наблюдалось ранее
                     {
                         newMyFInfo.notObserved_ = true;
                         newObservedFiles.append(newMyFInfo);
                     }
-                    else
+                    else // Иначе добавляем старые значения
                     {
                         newObservedFiles.append(observedFiles[i]);
                     }

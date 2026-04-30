@@ -40,7 +40,7 @@ private:
     FileObserver &operator=(const FileObserver &) = delete;  // Запрещаем присвоение
 
 public slots:
-    /// @brief
+    /// @brief Выполнить однократное наблюдение
     void onDoObservation();
 
 signals:

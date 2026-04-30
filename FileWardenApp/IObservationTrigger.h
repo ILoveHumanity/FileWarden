@@ -13,6 +13,7 @@ public:
     virtual ~IObservationTrigger() = default;
 
 signals:
+    /// @brief Сигнал о необходимости выполнить наблюдение.
     void doObservation();
 };
 #endif // IObservationTrigger_H

@@ -8,6 +8,7 @@ SleepObservationTrigger::SleepObservationTrigger(unsigned int timeInterval) : ti
 
 void SleepObservationTrigger::start()
 {
+    // Пока есть подключенные к триггеру, каждые timeInterval_ инициирует сигнал
     while (isSignalConnected(QMetaMethod::fromSignal(&SleepObservationTrigger::doObservation))) {
         QThread::msleep(timeInterval_);
         emit doObservation();

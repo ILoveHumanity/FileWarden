@@ -36,7 +36,7 @@ bool FileObserver::startObservation(const IObservationTrigger *observationTrigge
     }
     // Очищаем хранилище информации
     observedFiles_.clear();
-
+    // Соединяем слот с сигналом триггера
     connection_ = connect(observationTrigger, &IObservationTrigger::doObservation, this, &FileObserver::onDoObservation);
     return true;
 }
