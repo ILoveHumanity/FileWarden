@@ -8,6 +8,7 @@
 /// Реализация интерфейса IObservationTrigger
 class SleepObservationTrigger : public IObservationTrigger
 {
+    Q_OBJECT
 public:
     /// @brief Конструктор с параметром по умолчанию.
     /// @param[in] timeInterval Интервал задержки в миллисекундах (по умолчанию 100 мс).
@@ -16,8 +17,8 @@ public:
     /// @brief Деструктор.
     ~SleepObservationTrigger() = default;
 
-    /// @brief Ожидание перед следующим циклом наблюдения.
-    void wait();
+    /// @brief Запуск бесконечного цикла
+    void start();
 
 private:
     unsigned int timeInterval_; ///< Интервал задержки в миллисекундах.
