@@ -26,14 +26,14 @@ classDiagram
 	class FileObserver {
 		-QVector~MyFInfo~ observedFiles_
 		-IObservationSource* observationSource_
-		-IObservationTrigger* observationTrigger_
+		-QMetaObject::Connection connection_
 		-FileObserver()
 		-~FileObserver()
 		+static GetInstance() FileObserver&
 		+setObservationSource(IObservationSource*)
 		+setObservationTrigger(IObservationTrigger*)
 		+connectFileStateSignalHandler(const IFileStateSignalHandler*)
-		+startObservation()
+		+startObservation(const IObservationTrigger*)
 	}
 
 	class IObservationSource {
@@ -50,15 +50,14 @@ classDiagram
 	}
 
 	class IObservationTrigger {
-		<<interface>>
+		<<abstract>>
 		+~IObservationTrigger()*
-		+wait()*
 	}
 	class SleepObservationTrigger {
 		-unsigned int timeInterval_
 		+SleepObservationTrigger(unsigned int)
 		+~SleepObservationTrigger()
-		+wait()
+		+start()
 	}
 
 	class IFileStateSignalHandler {
@@ -86,7 +85,7 @@ classDiagram
 	FileObserver o-- IObservationSource
 	IObservationSource <|.. ObservationSourceFile
 
-	FileObserver o-- IObservationTrigger
+	FileObserver ..> IObservationTrigger
 	IObservationTrigger <|.. SleepObservationTrigger
 
 	FileObserver ..> IFileStateSignalHandler

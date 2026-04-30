@@ -27,7 +27,7 @@ void FileObserver::connectFileStateSignalHandler(const IFileStateSignalHandler *
     }
 }
 
-bool FileObserver::startObservation(IObservationTrigger *observationTrigger)
+bool FileObserver::startObservation(const IObservationTrigger *observationTrigger)
 {
     // Проверяем наличие всех необходимых сущностей
     if (!observationTrigger)

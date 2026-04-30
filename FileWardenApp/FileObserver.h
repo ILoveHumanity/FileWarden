@@ -27,7 +27,7 @@ public:
     void connectFileStateSignalHandler(const IFileStateSignalHandler *fileStateSignalHandler);
 
     /// @brief Запустить наблюдение за файлами (связать с триггером).
-    bool startObservation(IObservationTrigger *observationTrigger);
+    bool startObservation(const IObservationTrigger *observationTrigger);
 
 private:
     /// @brief Конструктор.
