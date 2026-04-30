@@ -86,11 +86,11 @@ classDiagram
 	IObservationSource <|.. ObservationSourceFile
 
 	FileObserver ..> IObservationTrigger
-	IObservationTrigger <|.. SleepObservationTrigger
+	IObservationTrigger <|-- SleepObservationTrigger
 
 	FileObserver ..> IFileStateSignalHandler
-    	FileStateSignalHandlerLogger ..|> IFileStateSignalHandler
-    	FileStateSignalHandlerLogger o-- ILog
+	FileStateSignalHandlerLogger ..|> IFileStateSignalHandler
+	FileStateSignalHandlerLogger o-- ILog
 	ILog <|.. ConsoleLog
 ```
 ### Диаграмма сигналов/слотов
