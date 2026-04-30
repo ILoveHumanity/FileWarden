@@ -2,14 +2,18 @@
 #define IObservationTrigger_H
 #pragma once
 
-/// @brief Интерфейс триггера задержки между циклами наблюдения.
-class IObservationTrigger
+#include <QObject>
+
+/// @brief Абстракция триггера наблюдения.
+class IObservationTrigger : public QObject
 {
+    Q_OBJECT
 public:
     /// @brief Виртуальный деструктор для корректного удаления наследников.
     virtual ~IObservationTrigger() = default;
 
-    /// @brief Ожидание перед следующим циклом наблюдения.
-    virtual void wait() = 0;
+signals:
+    /// @brief Сигнал о необходимости выполнить наблюдение.
+    void doObservation();
 };
 #endif // IObservationTrigger_H

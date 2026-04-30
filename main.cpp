@@ -25,17 +25,17 @@ int main(int argc, char *argv[])
 
     // Создаем все необходимые сущности
     auto source = new ObservationSourceFile(path); // ObservationSourceFile source(path);
-    auto trigger = new SleepObservationTrigger(100); // SleepObservationTrigger trigger(100);
+    SleepObservationTrigger trigger(100); // auto trigger = new SleepObservationTrigger(100);
     auto logger = new ConsoleLog; // ConsoleLog logger;
     FileObserver &observer = FileObserver::getInstance();
-    observer.setObservationSource(std::move(source));
-    observer.setObservationTrigger(std::move(trigger));
-    FileStateSignalHandlerLogger fileStateSignalHandler(std::move(logger));
+    observer.setObservationSource(source);
+    FileStateSignalHandlerLogger fileStateSignalHandler(logger);
     observer.connectFileStateSignalHandler(&fileStateSignalHandler);
 
     // Запускаем наблюдение
     out << " Observation started." << Qt::endl;
-    observer.startObservation(); // run cycle
+    observer.startObservation(&trigger); // run cycle
+    trigger.start();
     out << " Observation ended." << Qt::endl;
 
     return 0;

@@ -22,16 +22,12 @@ public:
     /// @param[in] observationSource Указатель на источник списка наблюдения
     void setObservationSource(IObservationSource *observationSource);
 
-    /// @brief Установить триггер задержки между циклами наблюдения.
-    /// @param[in] observationTrigger Указатель на триггер задержки между циклами наблюдения
-    void setObservationTrigger(IObservationTrigger *observationTrigger);
-
     /// @brief Подключить обработчик сигналов состояния файлов.
     /// @param[in] fileStateSignalHandler Указатель на обработчик сигналов состояния файлов
     void connectFileStateSignalHandler(const IFileStateSignalHandler *fileStateSignalHandler);
 
-    /// @brief Запустить бесконечный цикл наблюдения за файлами.
-    void startObservation();
+    /// @brief Запустить наблюдение за файлами (связать с триггером).
+    bool startObservation(const IObservationTrigger *observationTrigger);
 
 private:
     /// @brief Конструктор.
@@ -43,10 +39,9 @@ private:
     FileObserver(const FileObserver &) = delete; // Запрещаем копирование
     FileObserver &operator=(const FileObserver &) = delete;  // Запрещаем присвоение
 
-private:
-    IObservationSource *observationSource_; ///< Указатель на источник списка наблюдения.
-    IObservationTrigger *observationTrigger_; ///< Указатель на триггер цикла наблюдения.
-    QVector<MyFInfo> observedFiles_; ///< Контейнер для хранения информации о файлах.
+public slots:
+    /// @brief Выполнить однократное наблюдение
+    void onDoObservation();
 
 signals:
     /// @brief Сигнал о существовании файла.
@@ -62,6 +57,11 @@ signals:
     /// @brief Сигнал об отсутствии файла.
     /// @param[in] data Информация о файле
     void fileMissing(const QString& filePath);
+
+private:
+    IObservationSource *observationSource_; ///< Указатель на источник списка наблюдения.
+    QVector<MyFInfo> observedFiles_; ///< Контейнер для хранения информации о файлах.
+    QMetaObject::Connection connection_; ///< Соединение с триггером.
 };
 
 #endif // FileObserver_H
