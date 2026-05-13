@@ -4,13 +4,11 @@
 #include <QTextStream>
 #include <QFileInfo>
 
-ObservationSourceFile::ObservationSourceFile(QString sourceFilePath)
+ObservationSourceFile::ObservationSourceFile(QString sourceFilePath) : sourceFilePath_(sourceFilePath), lastModified_()
 {
-    sourceFilePath_ = sourceFilePath;
-    lastModified_ = QDateTime();
 }
 
-bool ObservationSourceFile::update(QVector<QString>& pathsToObservedFiles)
+bool ObservationSourceFile::update(QVector<MyFInfo>& observedFiles)
 {
     QFileInfo sourceFileInfo(sourceFilePath_);
     // Если файл существует
@@ -26,21 +24,33 @@ bool ObservationSourceFile::update(QVector<QString>& pathsToObservedFiles)
         // Иначе обновляем данные читая с файла
         if (sourceFile.open(QIODevice::ReadOnly | QIODevice::ExistingOnly | QIODevice::Text))
         {
-            pathsToObservedFiles.clear();
+            QVector<MyFInfo> newObservedFiles;
             QTextStream inFile(&sourceFile);
             while (!inFile.atEnd())
             {
                 QString newFilePath = inFile.readLine();
-                if (newFilePath.isEmpty())
+                if (newFilePath.isEmpty()) // Пропускаем пустые строки
                 {
                     continue;
                 }
-                newFilePath = QFileInfo(newFilePath).absoluteFilePath();
-                if(pathsToObservedFiles.indexOf(newFilePath) == -1){
-                    pathsToObservedFiles.append(newFilePath);
+                MyFInfo newMyFInfo;
+                newMyFInfo.filePath_ = QFileInfo(newFilePath).absoluteFilePath();
+                if(newObservedFiles.indexOf(newMyFInfo) == -1) // Проверяем на повторы
+                {
+                    int i = observedFiles.indexOf(newMyFInfo); // Проверяем на наличие в предыдущем списке наблюдения
+                    if(i == -1) // Если новый, добавляем с флагом не наблюдалось ранее
+                    {
+                        newMyFInfo.notObserved_ = true;
+                        newObservedFiles.append(newMyFInfo);
+                    }
+                    else // Иначе добавляем старые значения
+                    {
+                        newObservedFiles.append(observedFiles[i]);
+                    }
                 }
             }
             sourceFile.close();
+            observedFiles = newObservedFiles;
             return true;
         }
     }

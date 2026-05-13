@@ -27,18 +27,19 @@ private:
 
 public slots:
     /// @brief Обработчик события существования файла.
-    /// @param[in] data Информация о файле
+    /// @param[in] filePath Путь до файла
     /// @param[in] size Размер файла в байтах
-    virtual void onFileExistence(const MyFInfo& data, const int size);
+    virtual void onFileExistence(const QString& filePath, const int size);
 
     /// @brief Обработчик события обновления файла.
-    /// @param[in] data Информация о файле
+    /// @param[in] filePath Путь до файла
+    /// @param[in] lastModified Время последнего изменения файла
     /// @param[in] size Новый размер файла в байтах
-    virtual void onFileUpdate(const MyFInfo& data, const int size);
+    virtual void onFileUpdate(const QString& filePath, const QDateTime& lastModified, const int size);
 
     /// @brief Обработчик события отсутствия файла.
-    /// @param[in] data Информация о файле
-    void onFileMissing(const MyFInfo& data);
+    /// @param[in] filePath Путь до файла
+    virtual void onFileMissing(const QString& filePath);
 };
 
 #endif // FileStateSignalHandlerLogger_H

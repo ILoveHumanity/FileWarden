@@ -5,7 +5,6 @@
 #include "IFileStateSignalHandler.h"
 #include "IObservationSource.h"
 #include "IObservationTrigger.h"
-#include "IMyFInfoContainer.h"
 #include "MyFInfo.h"
 #include <QObject>
 
@@ -23,20 +22,12 @@ public:
     /// @param[in] observationSource Указатель на источник списка наблюдения
     void setObservationSource(IObservationSource *observationSource);
 
-    /// @brief Установить контейнер для хранения информации о файлах.
-    /// @param[in] myFInfoContainer Указатель на контейнер для хранения информации о файлах
-    void setMyFInfoContainer(IMyFInfoContainer *myFInfoContainer);
-
-    /// @brief Установить триггер задержки между циклами наблюдения.
-    /// @param[in] observationTrigger Указатель на триггер задержки между циклами наблюдения
-    void setObservationTrigger(IObservationTrigger *observationTrigger);
-
     /// @brief Подключить обработчик сигналов состояния файлов.
     /// @param[in] fileStateSignalHandler Указатель на обработчик сигналов состояния файлов
     void connectFileStateSignalHandler(const IFileStateSignalHandler *fileStateSignalHandler);
 
-    /// @brief Запустить бесконечный цикл наблюдения за файлами.
-    void startObservation();
+    /// @brief Запустить наблюдение за файлами (связать с триггером).
+    bool startObservation(const IObservationTrigger *observationTrigger);
 
 private:
     /// @brief Конструктор.
@@ -48,25 +39,29 @@ private:
     FileObserver(const FileObserver &) = delete; // Запрещаем копирование
     FileObserver &operator=(const FileObserver &) = delete;  // Запрещаем присвоение
 
-private:
-    IObservationSource *observationSource_; ///< Указатель на источник списка наблюдения.
-    IMyFInfoContainer *myFInfoContainer_; ///< Указатель на контейнер для хранения информации о файлах.
-    IObservationTrigger *observationTrigger_; ///< Указатель на триггер цикла наблюдения.
+public slots:
+    /// @brief Выполнить однократное наблюдение
+    void onDoObservation();
 
 signals:
     /// @brief Сигнал о существовании файла.
     /// @param[in] data Информация о файле
     /// @param[in] size Размер файла в байтах
-    void fileExist(const MyFInfo& data, const int size);
+    void fileExist(const QString& filePath, const int size);
 
     /// @brief Сигнал об обновлении файла.
     /// @param[in] data Информация о файле
     /// @param[in] size Новый размер файла в байтах
-    void fileUpdate(const MyFInfo& data, const int size);
+    void fileUpdate(const QString& filePath, const QDateTime& lastModified, const int size);
 
     /// @brief Сигнал об отсутствии файла.
     /// @param[in] data Информация о файле
-    void fileMissing(const MyFInfo& data);
+    void fileMissing(const QString& filePath);
+
+private:
+    IObservationSource *observationSource_; ///< Указатель на источник списка наблюдения.
+    QVector<MyFInfo> observedFiles_; ///< Контейнер для хранения информации о файлах.
+    QMetaObject::Connection connection_; ///< Соединение с триггером.
 };
 
 #endif // FileObserver_H

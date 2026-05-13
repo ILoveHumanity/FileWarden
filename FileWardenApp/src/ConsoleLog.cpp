@@ -4,6 +4,5 @@
 void ConsoleLog::log(QString data)
 {
     QTextStream out(stdout);
-    out << "[Log]" << data;
-    Qt::endl(out);
+    out << "[Log]" << data << Qt::endl;
 }

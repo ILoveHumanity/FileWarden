@@ -20,66 +20,50 @@
 В данной реализации используем механизм сигнально-слотового соединения для обеспечения обработки события изменения наблюдаемого файла.
 
 ## Решение
+### Основные компоненты:
+- **file_observer** — модуль, обеспечивающий наблюдение за файлами по запросу со стороны триггера.
+- **trigger** - модуль, отвечающий за инициацию наблюдение.
+- **logger** - модуль, отвечающий за логирование сообщений.
+- **signal_handler** - модуль, отвечающий за обработку сигналов от file_observer.
+
 ### UML-диаграмма классов
 ```mermaid
 classDiagram
 	class FileObserver {
-		-IMyFInfoContainer* myFInfoContainer_
+		-QVector~MyFInfo~ observedFiles_
 		-IObservationSource* observationSource_
-		-IObservationTrigger* observationTrigger_
+		-QMetaObject::Connection connection_
 		-FileObserver()
 		-~FileObserver()
 		+static GetInstance() FileObserver&
 		+setObservationSource(IObservationSource*)
-		+setMyFInfoContainer(IMyFInfoContainer*)
 		+setObservationTrigger(IObservationTrigger*)
 		+connectFileStateSignalHandler(const IFileStateSignalHandler*)
-		+startObservation()
-	}
-    
-	class IMyFInfoContainer {
-		<<interface>>
-		+~IMyFInfoContainer()*
-		+getByPath(const QString&) MyFInfo*
-		+getAllPaths() QVector~QString~*
-		+setNewData(const QVector~MyFInfo~&)*
-		+clear()*
-	}
-	class MyFInfoVectorContainer {
-		-QVector~QString~ VFilePath_
-		-QVector~bool~ VExist_
-		-QVector~QDateTime~ VLastModified_
-		+MyFInfoVectorContainer()
-		+~MyFInfoVectorContainer()
-		+getByPath(const QString&) MyFInfo
-		+getAllPaths() QVector~QString~
-		+setNewData(const QVector~MyFInfo~&)
-		+clear()
+		+startObservation(const IObservationTrigger*)
 	}
 
 	class IObservationSource {
 		<<interface>>
 		+~IObservationSource()*
-		+update(QVector~QString~&) bool*
+		+update(QVector~MyFInfo~&) bool*
 	}
 	class ObservationSourceFile {
 		-QString sourceFilePath_
 		-QDateTime lastModified_
 		+ObservationSourceFile(QString)
 		+~ObservationSourceFile()
-		+update(QVector~QString~&) bool
+		+update(QVector~MyFInfo~&) bool
 	}
 
 	class IObservationTrigger {
-		<<interface>>
+		<<abstract>>
 		+~IObservationTrigger()*
-		+wait()*
 	}
 	class SleepObservationTrigger {
 		-unsigned int timeInterval_
 		+SleepObservationTrigger(unsigned int)
 		+~SleepObservationTrigger()
-		+wait()
+		+start()
 	}
 
 	class IFileStateSignalHandler {
@@ -104,38 +88,35 @@ classDiagram
 		+log(QString)
 	}
 
-	class MyFInfo {
-		-QString filePath_
-		-bool exist_
-		-QDateTime lastModified_
-		+MyFInfo(QString, bool, QDateTime)
-		+~MyFInfo()
-		+MyFInfo(const MyFInfo&)
-		+operator=(const MyFInfo&)
-		+getFilePath() QString
-		+getExist() bool
-		+getLastModified() QDateTime
-		+isNull() bool
-	}
-
-	MyFInfo <.. IMyFInfoContainer
-
-	FileObserver o-- IMyFInfoContainer
-	IMyFInfoContainer <|.. MyFInfoVectorContainer
-
 	FileObserver o-- IObservationSource
 	IObservationSource <|.. ObservationSourceFile
 
-	FileObserver o-- IObservationTrigger
-	IObservationTrigger <|.. SleepObservationTrigger
+	FileObserver ..> IObservationTrigger
+	IObservationTrigger <|-- SleepObservationTrigger
 
 	FileObserver ..> IFileStateSignalHandler
-    FileStateSignalHandlerLogger ..|> IFileStateSignalHandler
-    FileStateSignalHandlerLogger o-- ILog
+	FileStateSignalHandlerLogger ..|> IFileStateSignalHandler
+	FileStateSignalHandlerLogger o-- ILog
 	ILog <|.. ConsoleLog
 ```
 ### Диаграмма сигналов/слотов
 ![SignalsAndSlots](/ReadmeDoc/SignalsAndSlots.svg)
+
+## Инструкция для пользователя
+1) Соберите проект
+2) Создайте файл со списком наблюдения
+3) Введите путь до него в программу при запросе
+
+Формат работы с файлом со списком наблюдения:
+
+Файл со списком наблюдения - .txt файл представляющий интерфейс взаимодействия с программой.
+- Для добавления файла под наблюдение необходимо добавить путь до него.
+	- Пути до наблюдаемых файлов записываются построчно, с начала строки.
+	- Поддерживаются как абсолютные так и относительные пути.
+	- Каждая новая строчка рассматривается как потенциальный путь до файла.
+- Для удаления файла из под наблюдения необходимо удалить путь до него.
+- Для окончания наблюдения необходимо удалить файл со списком наблюдения.
+
 
 ## Тестирование
 ### Пользовательские тест-кейсы

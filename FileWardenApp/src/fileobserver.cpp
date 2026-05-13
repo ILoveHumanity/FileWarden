@@ -2,7 +2,7 @@
 #include <QDateTime>
 #include <QFileInfo>
 
-FileObserver::FileObserver() : observationSource_(nullptr), myFInfoContainer_(nullptr), observationTrigger_(nullptr)
+FileObserver::FileObserver() : observationSource_(nullptr), connection_()
 {
 }
 
@@ -17,16 +17,6 @@ void FileObserver::setObservationSource(IObservationSource *observationSource)
     observationSource_ = observationSource;
 }
 
-void FileObserver::setMyFInfoContainer(IMyFInfoContainer *myFInfoContainer)
-{
-    myFInfoContainer_ = myFInfoContainer;
-}
-
-void FileObserver::setObservationTrigger(IObservationTrigger *observationTrigger)
-{
-    observationTrigger_ = observationTrigger;
-}
-
 void FileObserver::connectFileStateSignalHandler(const IFileStateSignalHandler *fileStateSignalHandler)
 {
     if(fileStateSignalHandler)
@@ -37,56 +27,56 @@ void FileObserver::connectFileStateSignalHandler(const IFileStateSignalHandler *
     }
 }
 
-void FileObserver::startObservation()
+bool FileObserver::startObservation(const IObservationTrigger *observationTrigger)
 {
     // Проверяем наличие всех необходимых сущностей
-    if (!observationSource_ || !observationTrigger_ || !myFInfoContainer_)
+    if (!observationTrigger)
     {
-        return;
+        return false;
     }
     // Очищаем хранилище информации
-    myFInfoContainer_ -> clear();
-    // Получаем начальный список наблюдаемых файлов
-    QVector<QString> newPathsToObservedFiles = myFInfoContainer_->getAllPaths();
-    QVector<MyFInfo> newObservedFiles;
-    while (true)
+    observedFiles_.clear();
+    // Соединяем слот с сигналом триггера
+    connection_ = connect(observationTrigger, &IObservationTrigger::doObservation, this, &FileObserver::onDoObservation);
+    return true;
+}
+
+void FileObserver::onDoObservation()
+{
+    // Обновляем список наблюдаемых файлов, в случае ошибки заканчиваем наблюдение
+    if(!observationSource_->update(observedFiles_))
     {
-        // Обновляем список наблюдаемых файлов, в случае ошибки заканчиваем наблюдение
-        if(!observationSource_->update(newPathsToObservedFiles))
+        disconnect(connection_);
+        return;
+    }
+
+    // Для каждого файла устанавливаем его параметры, сравниваем их с предыдущими, генерируя сигналы
+    for (int i = 0; i < observedFiles_.size(); ++i)
+    {
+        QFileInfo newFileInfo(observedFiles_[i].filePath_);
+        bool newObservedFileExist = newFileInfo.isFile() && !newFileInfo.isSymLink() && newFileInfo.size() != 0;
+        QDateTime newObservedFileLastModified = newFileInfo.lastModified();
+        int newObservedFileSize = newFileInfo.size();
+        // Если файл добавился под наблюдение || Если файл удалили/создали
+        if (observedFiles_[i].notObserved_ || observedFiles_[i].exist_ != newObservedFileExist)
         {
-            return;
+            if(newObservedFileExist)
+            {
+                emit fileExist(observedFiles_[i].filePath_, newObservedFileSize);
+            }
+            else
+            {
+                emit fileMissing(observedFiles_[i].filePath_);
+            }
         }
-        // Очищаем локальное хранилище информации
-        newObservedFiles.clear();
-        // Для каждого файла устанавливаем его параметры, сравниваем их с предыдущими, генерируя сигналы
-        for (int i = 0; i < newPathsToObservedFiles.size(); ++i)
+        // Если файл изменился
+        else if(newObservedFileExist && observedFiles_[i].lastModified_ != newObservedFileLastModified)
         {
-            QFileInfo newFileInfo(newPathsToObservedFiles[i]);
-            MyFInfo newObservedFile(newFileInfo.absoluteFilePath(), newFileInfo.isFile() && !newFileInfo.isSymLink() && newFileInfo.size() != 0, newFileInfo.lastModified());
-            int size = newFileInfo.size();
-            newObservedFiles.append(newObservedFile);
-            MyFInfo observedFile = myFInfoContainer_->getByPath(newObservedFile.getFilePath());
-            // Если файл добавился под наблюдение || Если файл удалили/добавили
-            if (observedFile.isNull() || observedFile.getExist() != newObservedFile.getExist())
-            {
-                if(newObservedFile.getExist())
-                {
-                    emit fileExist(newObservedFile, size);
-                }
-                else
-                {
-                    emit fileMissing(newObservedFile);
-                }
-            }
-            // Если файл изменился
-            else if(newObservedFile.getExist() && observedFile.getLastModified() != newObservedFile.getLastModified())
-            {
-                emit fileUpdate(newObservedFile, size);
-            }
+            emit fileUpdate(observedFiles_[i].filePath_, newObservedFileLastModified, newObservedFileSize);
         }
         // Устанавливаем новые данные
-        myFInfoContainer_->setNewData(newObservedFiles);
-        // Ожидаем следующего цикла наблюдения
-        observationTrigger_->wait();
+        observedFiles_[i].notObserved_ = false;
+        observedFiles_[i].exist_ = newObservedFileExist;
+        observedFiles_[i].lastModified_ = newObservedFileLastModified;
     }
 }

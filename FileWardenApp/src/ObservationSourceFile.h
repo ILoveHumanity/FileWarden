@@ -2,7 +2,9 @@
 #define ObservationSourceFile_H
 #pragma once
 
-#include <IObservationSource.h>
+#include "IObservationSource.h"
+#include "MyFInfo.h"
+#include <QString>
 #include <QDateTime>
 
 /// @brief Источник списка наблюдения из текстового файла.
@@ -17,10 +19,10 @@ public:
     /// @brief Деструктор.
     ~ObservationSourceFile() = default;
 
-    /// @brief Обновить список путей для наблюдения.
-    /// @param[in,out] newPathsToObservedFiles Вектор для сохранения новых путей
+    /// @brief Обновить список наблюдаемых файлов.
+    /// @param[in,out] observedFiles Контейнер с хранящейся информацией о файлах.
     /// @return true в случае успешного обновления, false при ошибке
-    bool update(QVector<QString>& pathsToObservedFiles);
+    bool update(QVector<MyFInfo>& observedFiles);
 
 private:
     QString sourceFilePath_; ///< Путь к файлу со списком наблюдения.
