@@ -44,7 +44,7 @@ bool FileObserver::startObservation(const IObservationTrigger *observationTrigge
 void FileObserver::onDoObservation()
 {
     // Обновляем список наблюдаемых файлов, в случае ошибки заканчиваем наблюдение
-    if(!observationSource_->update(observedFiles_))
+    if(observationSource_ && !observationSource_->update(observedFiles_))
     {
         disconnect(connection_);
         return;
